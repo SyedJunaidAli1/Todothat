@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import LeftsideBar from "./components/LeftsideBar";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,8 +17,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en"  suppressHydrationWarning>
       <body>
+      <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+          >
         <SidebarProvider>
           <LeftsideBar />
           <main>
@@ -24,7 +31,7 @@ export default function RootLayout({
             {children}
           </main>
         </SidebarProvider>
-
+        </ThemeProvider>
       </body>
     </html>
   );

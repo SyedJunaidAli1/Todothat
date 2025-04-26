@@ -1,10 +1,8 @@
 'use client'
 import { ChevronFirst, ChevronLast, MoreVertical, ChevronDown, Folder } from "lucide-react";
 import React, { createContext, useContext, useState } from "react";
-import ThemeToggle from "./ThemeToggle";
 
 const SidebarContext = createContext();
-
 const Sidebar = ({ children, onItemSelect }) => {
   const [expanded, setExpanded] = useState(true);
   return (
@@ -29,9 +27,8 @@ const Sidebar = ({ children, onItemSelect }) => {
             N
           </div>
           <div
-            className={`flex justify-between items-center overflow-hidden transition-all ${
-              expanded ? "w-52 ml-3" : "w-0"
-            }`}
+            className={`flex justify-between items-center overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"
+              }`}
           >
             <div className="leading-4">
               <h4 className="font-semibold">Hola</h4>
@@ -64,9 +61,9 @@ const SidebarItem = ({ icon, text, active, alert, children, subItem, onSelect })
     <li className="relative">
       <div
         className={`
-          flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group
+          flex items-center justify-center py-2 px-4 my-1 font-medium rounded-md cursor-pointer transition-colors group
           ${active ? "bg-gradient-to-tr from-emerald-300 to-emerald-400" : "hover:bg-emerald-200"}
-          ${subItem ? "pl-8 text-sm" : ""}
+          ${subItem ? "text-sm" : ""}
         `}
         onClick={handleClick}
       >
@@ -104,12 +101,11 @@ const SidebarItem = ({ icon, text, active, alert, children, subItem, onSelect })
           </div>
         )}
       </div>
-      
+
       {children && (
         <ul
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            isOpen || !expanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-          }`}
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen || !expanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+            }`}
         >
           {React.Children.map(children, (child, index) =>
             React.cloneElement(child, { ...child.props, subItem: true })

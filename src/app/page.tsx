@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className="flex">
       <Sidebar >
-        <SidebarItem icon={<CirclePlus />} text="Add Task" />
+        <SidebarItem icon={<CirclePlus />} text="Add Task"/>
         <SidebarItem icon={<Search />} text="Search" />
         <SidebarItem icon={<Inbox />} text="Inbox" alert />
         <SidebarItem icon={<CalendarFold />} text="Today" />

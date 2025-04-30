@@ -8,3 +8,4 @@ TODO
 - [] set up drizzle orm for prsma
 - [x] fix the childern alignment of My project
 - [x] fix my project close and open issue in collapsed view
+- [x] Sidebar with pages

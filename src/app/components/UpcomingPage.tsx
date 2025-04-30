@@ -1,7 +1,7 @@
 const UpcomingPage = () => {
     return (
         <div>
-            <h1>Upcoming</h1>
+            <h1 className="text-6xl">Upcoming</h1>
         </div>
     )
 }

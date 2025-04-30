@@ -2,11 +2,12 @@
 import { Sidebar, SidebarItem } from "./components/Sidebar";
 import { CalendarDays, CalendarFold, CirclePlus, ClipboardCheck, Inbox, Search, Folder } from 'lucide-react';
 import ThemeToggle from "./components/ThemeToggle";
+import InboxPage from "./components/InboxPage";
 import { useState } from 'react';
+import Link from "next/link";
 
 export default function Home() {
-  const [activeItem, setActiveItem] = useState('Upcoming');
-
+  const [activeItem, setActiveItem] = useState('');
   const handleItemSelect = (itemText) => {
     setActiveItem(itemText);
   };
@@ -16,7 +17,12 @@ export default function Home() {
       <Sidebar onItemSelect={handleItemSelect}>
         <SidebarItem icon={<CirclePlus />} text="Add Task" active={activeItem === 'Add Task'} />
         <SidebarItem icon={<Search />} text="Search" active={activeItem === 'Search'} />
-        <SidebarItem icon={<Inbox />} text="Inbox" alert active={activeItem === 'Inbox'} />
+
+        <Link href="./components/InboxPage">
+          <SidebarItem icon={<Inbox />} text="Inbox" alert active={activeItem === 'Inbox'} />
+        </Link>
+
+
         <SidebarItem icon={<CalendarFold />} text="Today" active={activeItem === 'Today'} />
         <SidebarItem icon={<CalendarDays />} text="Upcoming" active={activeItem === 'Upcoming'} />
         <SidebarItem icon={<ClipboardCheck />} text="Completed" active={activeItem === 'Completed'} />
@@ -27,6 +33,7 @@ export default function Home() {
         </SidebarItem>
       </Sidebar>
       <ThemeToggle />
+      <InboxPage />
     </div>
   );
 }

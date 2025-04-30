@@ -6,4 +6,5 @@ TODO
 - [] Authentication using better auth
 - [] set up DB using prisma
 - [] set up drizzle orm for prsma
-- [] fix the childern alignment of My project
+- [x] fix the childern alignment of My project
+- [x] fix my project close and open issue in collapsed view

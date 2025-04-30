@@ -1,5 +1,11 @@
-'use client'
-import { ChevronFirst, ChevronLast, MoreVertical, ChevronDown, Folder } from "lucide-react";
+"use client";
+import {
+  ChevronFirst,
+  ChevronLast,
+  MoreVertical,
+  ChevronDown,
+  Folder,
+} from "lucide-react";
 import React, { createContext, useContext, useState } from "react";
 
 const SidebarContext = createContext();
@@ -9,7 +15,13 @@ const Sidebar = ({ children, onItemSelect }) => {
     <aside className="h-screen">
       <nav className="h-full flex flex-col border-r shadow-sm">
         <div className="p-10 pb-2 flex justify-between items-center">
-          <h1 className={`overflow-hidden transition-all ${expanded ? "w-32" : "w-0"}`}>TODO App</h1>
+          <h1
+            className={`overflow-hidden text-xl transition-all ${
+              expanded ? "w-32" : "w-0"
+            }`}
+          >
+            TODO App
+          </h1>
           <button
             onClick={() => setExpanded((curr) => !curr)}
             className="p-1.5 rounded-lg text-black bg-gray-50 hover:bg-gray-300"
@@ -27,8 +39,9 @@ const Sidebar = ({ children, onItemSelect }) => {
             N
           </div>
           <div
-            className={`flex justify-between items-center overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"
-              }`}
+            className={`flex justify-between items-center overflow-hidden transition-all ${
+              expanded ? "w-52 ml-3" : "w-0"
+            }`}
           >
             <div className="leading-4">
               <h4 className="font-semibold">Hola</h4>
@@ -42,7 +55,15 @@ const Sidebar = ({ children, onItemSelect }) => {
   );
 };
 
-const SidebarItem = ({ icon, text, active, alert, children, subItem, onSelect }) => {
+const SidebarItem = ({
+  icon,
+  text,
+  active,
+  alert,
+  children,
+  subItem,
+  onSelect,
+}) => {
   const { expanded, onItemSelect } = useContext(SidebarContext);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -56,27 +77,40 @@ const SidebarItem = ({ icon, text, active, alert, children, subItem, onSelect })
       onItemSelect(text);
     }
   };
-
   return (
     <li className="relative">
       <div
         className={`
           flex items-center justify-center py-2 px-4 my-1 font-medium rounded-md cursor-pointer transition-colors group
-          ${active ? "bg-gradient-to-tr from-emerald-300 to-emerald-400" : "hover:bg-emerald-200"}
+          ${
+            active
+              ? "bg-gradient-to-tr from-emerald-300 to-emerald-400"
+              : "hover:bg-emerald-200"
+          }
           ${subItem ? "text-sm" : ""}
         `}
         onClick={handleClick}
       >
         {icon}
-        <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>{text}</span>
+        <span
+          className={`overflow-hidden transition-all ${
+            expanded ? "w-52 ml-3" : "w-0"
+          }`}
+        >
+          {text}
+        </span>
         {alert && (
           <div
-            className={`absolute right-2 w-2 h-2 rounded bg-emerald-400 ${expanded ? "" : "top-2"}`}
+            className={`absolute right-2 w-2 h-2 rounded bg-emerald-400 ${
+              expanded ? "" : "top-2"
+            }`}
           />
         )}
         {children && (
           <ChevronDown
-            className={`ml-2 transition-transform ${isOpen ? "rotate-180" : ""}`}
+            className={`ml-2 transition-transform ${
+              isOpen ? "rotate-180" : ""
+            }`}
             size={16}
           />
         )}
@@ -104,8 +138,9 @@ const SidebarItem = ({ icon, text, active, alert, children, subItem, onSelect })
 
       {children && (
         <ul
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen || !expanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-            }`}
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+            isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
         >
           {React.Children.map(children, (child, index) =>
             React.cloneElement(child, { ...child.props, subItem: true })

@@ -5,7 +5,7 @@ import { auth } from '@/lib/auth'
 export const signIn = async () => {
     await auth.api.signInEmail({
         body: {
-            email: "123@gmail.com",
+            email: "syedjunaidali790@gmail.com",
             password: "pasword123",
         }
     })
@@ -13,7 +13,7 @@ export const signIn = async () => {
 export const signUp = async () => {
     await auth.api.signUpEmail({
         body: {
-            email: "123@gmail.com",
+            email: "syedjunaidali790@gmail.com",
             password: "pasword123",
             name: "Junaid",
         }

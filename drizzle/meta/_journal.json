@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1746268620045,
-      "tag": "0000_goofy_vector",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1746612867694,
-      "tag": "0001_glamorous_zombie",
+      "when": 1746702309131,
+      "tag": "0000_flippant_meteorite",
       "breakpoints": true
     }
   ]

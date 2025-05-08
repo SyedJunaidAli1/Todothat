@@ -1,62 +1,79 @@
 // src/db/schema.ts
+import {
+  pgTable,
+  serial,
+  varchar,
+  text,
+  boolean,
+  timestamp,
+  integer,
+  unique,
+} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { pgTable, integer, text, boolean, serial, varchar, timestamp, unique } from "drizzle-orm/pg-core";
 
-export const users = pgTable("users", {
+export const user = pgTable("user", {
   id: serial("id").primaryKey(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: text("password").notNull(),
   name: varchar("name", { length: 100 }),
-  role: varchar("role", { length: 50 }).default("users"),
-  emailVerified: boolean("emailverifiend").default(false),
+  role: varchar("role", { length: 50 }).default("user"),
+  emailVerified: boolean("email_verified").default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-})
+});
 
 export const sessions = pgTable("sessions", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
   token: text("token").notNull(),
-  expiresAt: timestamp("expiress_at").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-})
+});
 
-export const verificationTokens = pgTable("verificationTokens", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  token: text("token").notNull(),
-  expiresAt: timestamp("expiress_at").notNull(),
-  type: varchar("type", { length: 50 }).notNull() // e.g., "email_verification", "password_reset"
-}, (table) => ({
-  uniquetoken: unique().on(table.userId, table.type)
-}))
+export const verificationTokens = pgTable(
+  "verification_tokens",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    token: text("token").notNull(),
+    type: varchar("type", { length: 50 }).notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+  },
+  (table) => ({
+    uniqueToken: unique().on(table.userId, table.type),
+  })
+);
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const userRelations = relations(user, ({ many }) => ({
   sessions: many(sessions),
   verificationTokens: many(verificationTokens),
-}))
+}));
 
-export const sessionsRelation = relations(sessions, ({ one }) => ({
-  users: one(users, {
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(user, {
     fields: [sessions.userId],
-    references: [users.id],
+    references: [user.id],
   }),
-}))
+}));
 
-export const verificationTokensRelations = relations(verificationTokens, ({ one }) => ({
-  users: one(users, {
-    fields: [verificationTokens.userId],
-    references: [users.id],
+export const verificationTokensRelations = relations(
+  verificationTokens,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [verificationTokens.userId],
+      references: [user.id],
+    }),
   })
-})
-)
+);
 
-// Existing Todo Table (kept for continuity)
 export const todo = pgTable("todo", {
   id: integer("id").primaryKey(),
   text: text("text").notNull(),
   done: boolean("done").default(false).notNull(),
 });
 
-
-export const schema = { users, sessions, verificationTokens, usersRelations, sessionsRelation, verificationTokensRelations, todo }
+export const schema = { user, sessions, verificationTokens, userRelations, sessionsRelations, verificationTokensRelations, todo }

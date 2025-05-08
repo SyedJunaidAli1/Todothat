@@ -57,3 +57,6 @@ export const todo = pgTable("todo", {
   text: text("text").notNull(),
   done: boolean("done").default(false).notNull(),
 });
+
+
+export const schema = { users, sessions, verificationTokens, usersRelations, sessionsRelation, verificationTokensRelations, todo }

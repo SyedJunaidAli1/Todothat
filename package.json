@@ -13,6 +13,7 @@
     "@better-auth/client": "^0.0.2-alpha.3",
     "@neondatabase/serverless": "^1.0.0",
     "@radix-ui/react-slot": "^1.2.0",
+    "bcryptjs": "^3.0.2",
     "better-auth": "^1.2.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

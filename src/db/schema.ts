@@ -1,79 +1,94 @@
-// src/db/schema.ts
-import {
-  pgTable,
-  serial,
-  varchar,
-  text,
-  boolean,
-  timestamp,
-  integer,
-  unique,
-} from "drizzle-orm/pg-core";
+import { pgTable, text, boolean, timestamp } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+// import { v4 as uuidv4 } from 'uuid';
 
+// User table
 export const user = pgTable("user", {
-  id: serial("id").primaryKey(),
-  email: varchar("email", { length: 255 }).notNull().unique(),
-  password: text("password").notNull(),
-  name: varchar("name", { length: 100 }),
-  role: varchar("role", { length: 50 }).default("user"),
-  emailVerified: boolean("email_verified").default(false),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  emailVerified: boolean("email_verified").notNull(),
+  image: text("image"),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
 });
 
-export const sessions = pgTable("sessions", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  token: text("token").notNull(),
+// Session table
+export const session = pgTable("session", {
+  id: text("id").primaryKey(),
   expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
+  token: text("token").notNull().unique(),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
 });
 
-export const verificationTokens = pgTable(
-  "verification_tokens",
-  {
-    id: serial("id").primaryKey(),
-    userId: integer("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    token: text("token").notNull(),
-    type: varchar("type", { length: 50 }).notNull(),
-    expiresAt: timestamp("expires_at").notNull(),
-  },
-  (table) => ({
-    uniqueToken: unique().on(table.userId, table.type),
-  })
-);
+// Account table
+export const account = pgTable("account", {
+  id: text("id").primaryKey(),
+  accountId: text("account_id").notNull(),
+  providerId: text("provider_id").notNull(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  idToken: text("id_token"),
+  accessTokenExpiresAt: timestamp("access_token_expires_at"),
+  refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
+  scope: text("scope"),
+  password: text("password"),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
+});
 
+// Verification table
+export const verification = pgTable("verification", {
+  id: text("id").primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at"),
+  updatedAt: timestamp("updated_at"),
+});
+
+// Relations for all tables
 export const userRelations = relations(user, ({ many }) => ({
-  sessions: many(sessions),
-  verificationTokens: many(verificationTokens),
+  sessions: many(session),
+  accounts: many(account),
+  verifications: many(verification),
 }));
 
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-  user: one(user, {
-    fields: [sessions.userId],
-    references: [user.id],
-  }),
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(user, { fields: [session.userId], references: [user.id] }),
 }));
 
-export const verificationTokensRelations = relations(
-  verificationTokens,
-  ({ one }) => ({
-    user: one(user, {
-      fields: [verificationTokens.userId],
-      references: [user.id],
-    }),
-  })
-);
+export const accountRelations = relations(account, ({ one }) => ({
+  user: one(user, { fields: [account.userId], references: [user.id] }),
+}));
 
+export const verificationRelations = relations(verification, ({ one }) => ({
+  user: one(user, { fields: [verification.identifier], references: [user.email] }),
+}));
+
+// Todo table
 export const todo = pgTable("todo", {
-  id: integer("id").primaryKey(),
+  id: text("id").primaryKey(), // optional: use serial if local-only, or text if associated with users from auth
   text: text("text").notNull(),
   done: boolean("done").default(false).notNull(),
 });
 
-export const schema = { user, sessions, verificationTokens, userRelations, sessionsRelations, verificationTokensRelations, todo }
+
+export const schema = {
+  user,
+  session,
+  account,
+  verification,
+  userRelations,
+  sessionRelations,
+  accountRelations,
+  verificationRelations,
+  todo
+};
+
+

@@ -1,9 +1,7 @@
-import React from 'react'
-
-'use server'
 import { auth } from "@/lib/auth";
 import { signIn, signUp } from "@/lib/methods/users";
 import { headers } from "next/headers";
+import SignOut from '../components/SignOut';
 
 const page = async () => {
   const session = await auth.api.getSession({
@@ -21,6 +19,7 @@ const page = async () => {
         </button>
         <p>{!session ? "Not Authenticated" : session.user.name}</p>
       </div>
+      <SignOut />
     </div>
   );
 };

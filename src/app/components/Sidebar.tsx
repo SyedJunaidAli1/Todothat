@@ -2,11 +2,11 @@
 import {
   ChevronFirst,
   ChevronLast,
-  MoreVertical,
   ChevronDown,
   Folder,
 } from "lucide-react";
 import React, { createContext, useContext, useState } from "react";
+import Profile from "./Profile";
 
 const SidebarContext = createContext();
 const Sidebar = ({ children, onItemSelect }) => {
@@ -34,22 +34,7 @@ const Sidebar = ({ children, onItemSelect }) => {
           <ul className="flex-1 px-3">{children}</ul>
         </SidebarContext.Provider>
 
-        <div className="border-t flex p-3">
-          <div className="w-10 h-10 rounded-md bg-gray-200 flex items-center justify-center text-gray-600 font-semibold">
-            N
-          </div>
-          <div
-            className={`flex justify-between items-center overflow-hidden transition-all ${
-              expanded ? "w-52 ml-3" : "w-0"
-            }`}
-          >
-            <div className="leading-4">
-              <h4 className="font-semibold">Hola</h4>
-              <span className="text-xs text-gray-600">Hola@123gmail.com</span>
-            </div>
-            <MoreVertical size={20} />
-          </div>
-        </div>
+          <Profile expanded={expanded} />
       </nav>
     </aside>
   );

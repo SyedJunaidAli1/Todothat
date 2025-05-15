@@ -10,19 +10,19 @@ export const signIn = async (email: string, password: string) => {
     // Optional: return success message
     return res
   } catch (error) {
-    throw new Error("Failed to sign in");
+    throw new Error("Failed to Sign in");
   }
 };
 
 
-export const signUp = async (formData: FormData) => {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const name = formData.get("name") as string;
-
-  await auth.api.signUpEmail({
-    body: { email, password, name },
-  });
+export const signUp = async (name: string, email: string, password: string) => {
+  try {
+    await auth.api.signUpEmail({
+      body: { email, password, name },
+    });
+  } catch (error) {
+    throw new Error("Failed to Sign up")
+  }
 };
 
 

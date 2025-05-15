@@ -1,8 +1,5 @@
-"use client";
-import { useState } from "react";
-import { signIn } from "@/lib/methods/users";
+'use client'
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -10,44 +7,55 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { signUp } from "@/lib/methods/users";
 import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { toast } from "sonner";
 
-export default function SignInPage() {
-  const [email, setEmail] = useState("");
+const page = () => {
+  const router = useRouter();
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
-  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await signIn(email, password);
-      if (!res || res.error) {
-        throw new Error("Invalid credentials");
-      }
-      toast.success("You're Loggen in 🎉");
-      router.push("/"); // ✅ this will now work
-    } catch (err: any) {
-      setError("Invalid credentials");
+      await signUp(name, email, password);
+      toast.success("Account created successfully 🎉");
+      router.push("/");
+    } catch (error) {
+      setError("something went wrong in Signup");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center">
       <form onSubmit={handleSubmit} className="w-full max-w-sm">
-        <Card className=" border shadow-xl rounded-2xl">
+        <Card className="border shadow-xl rounded-2xl">
           <CardHeader>
-            <CardTitle className="text-2xl text-center">Sign In</CardTitle>
+            <CardTitle className="text-2xl text-center">Sign Up</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            <div>
+              <label className="block text-sm mb-1">Name</label>
+              <Input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name"
+                required
+              />
+            </div>
             <div>
               <label className="block text-sm mb-1">Email</label>
               <Input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
+                placeholder="Your email"
                 required
               />
             </div>
@@ -57,7 +65,7 @@ export default function SignInPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
+                placeholder="Create a password"
                 required
               />
             </div>
@@ -70,12 +78,12 @@ export default function SignInPage() {
               type="submit"
               className="w-full bg-emerald-500 hover:bg-emerald-600"
             >
-              Sign In
+              Create Account
             </Button>
             <p className="text-sm text-gray-500 text-center">
-              Don't have an account? <br />
-              <a href="/Signup" className="text-emerald-400 hover:underline">
-                Sign Up
+              Already have an account?{" "}
+              <a href="/Signin" className="text-emerald-400 hover:underline">
+                Sign In
               </a>
             </p>
           </CardFooter>
@@ -83,4 +91,5 @@ export default function SignInPage() {
       </form>
     </div>
   );
-}
+};
+export default page;

@@ -1,10 +1,5 @@
 "use client";
-import {
-  ChevronFirst,
-  ChevronLast,
-  ChevronDown,
-  Folder,
-} from "lucide-react";
+import { ChevronFirst, ChevronLast, ChevronDown, Folder } from "lucide-react";
 import React, { createContext, useContext, useState } from "react";
 import Profile from "./Profile";
 
@@ -34,7 +29,7 @@ const Sidebar = ({ children, onItemSelect }) => {
           <ul className="flex-1 px-3">{children}</ul>
         </SidebarContext.Provider>
 
-          <Profile expanded={expanded} />
+        <Profile expanded={expanded} />
       </nav>
     </aside>
   );

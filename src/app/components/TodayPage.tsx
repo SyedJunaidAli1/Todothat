@@ -1,24 +1,8 @@
-// 'use server'
-import { auth } from "@/lib/auth";
-import { signIn, signUp } from "@/lib/methods/users";
-// import { headers } from "next/headers";
-
 const TodayPage = () => {
-  // const session = await auth.api.getSession({
-  //   headers: await headers(),
-  // })
+
   return (
     <div>
       <h1 className="text-6xl">TodayPage</h1>
-      <div className="flex justify-between">
-        <button className="p-3 border-2 border-white bg-emerald-400 rounded-lg" onClick={signIn}>
-          Signin
-        </button>
-        <button className="p-3 border-2 border-white bg-emerald-400 rounded-lg" onClick={signUp}>
-          Signup
-        </button>
-        {/* <P>{!session ? "Not Authenticated" : session.user.name}</P> */}
-      </div>
     </div>
   );
 };

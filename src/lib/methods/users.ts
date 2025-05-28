@@ -1,7 +1,8 @@
 "use server"
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers';
-
+import { Resend } from "resend";
+import { createResetToken, saveTokenToDB } from "../tokenUtils"; // you write these
 
 export const signIn = async (email: string, password: string) => {
   try {
@@ -40,21 +41,17 @@ export const signOut = async () => {
 }
 
 
-// export const signIn = async () => {
-//   await auth.api.signInEmail({
-//     body: {
-//       email: "yellow@gmail.com",
-//       password: "yello9669",
-//     }
-//   })
-// }
+const resend = new Resend(process.env.RESEND_API_KEY!);
+export async function sendPasswordReset(email: string) {
+  const token = createResetToken(); // generate a UUID or JWT
+  const resetLink = `http://localhost:3000/Reset-password?token=${token}`;
 
-// export const signUp = async () => {
-//  await auth.api.signUpEmail({
-//   body: {
-//     email: "yellow@gmail.com",
-//     password: "yello9669",
-//     name: "yellow"
-//   }
-// });
-// }
+  await saveTokenToDB(email, token); // store token with expiration
+
+  await resend.emails.send({
+    from: "noreply@todothat.space",
+    to: email,
+    subject: "Reset your password",
+    html: `<p>Click <a href="${resetLink}">here</a> to reset your password.</p>`,
+  });
+}

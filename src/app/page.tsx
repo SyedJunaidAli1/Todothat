@@ -16,7 +16,7 @@ import UpcomingPage from "./components/UpcomingPage";
 import TodayPage from "./components/TodayPage";
 import { useState } from "react";
 
-export default function Home () {
+export default function Home() {
   const [activeItem, setActiveItem] = useState("");
   const handleItemSelect = (itemtext) => {
     setActiveItem(itemtext);

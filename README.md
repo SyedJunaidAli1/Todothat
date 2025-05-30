@@ -10,6 +10,7 @@
 - [x] fix my project close and open issue in collapsed view
 - [x] Sidebar with pages
 - [x] Resend setup for mail
+- [x] Domain bought for Todothat from hostinger
 - [] Forgotpass and reset pass Wip
 - [] Avatar for PFP
 - [] Email verification for new Accounts

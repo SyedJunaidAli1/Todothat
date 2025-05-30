@@ -11,10 +11,11 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
         sendResetPassword: async ({ user, url, token }, request) => {
-            await resend({
+            await resend.emails.send({
+                from: "noreply@todothat.space",
                 to: user.email,
                 subject: "Reset your password",
-                text: `Click the link to reset your password: ${url}`,
+                html: `<p>Click <a href="${url}">here</a> to reset your password.</p>`,
             });
         },
     },

@@ -11,11 +11,11 @@ const Sidebar = ({ children, onItemSelect }) => {
       <nav className="h-full flex flex-col border-r shadow-sm">
         <div className="p-10 pb-2 flex justify-between items-center">
           <h1
-            className={`overflow-hidden text-xl transition-all ${
+            className={`overflow-hidden text-xl text-emerald-200 transition-all ${
               expanded ? "w-32" : "w-0"
             }`}
           >
-            TODO App
+            Todothat
           </h1>
           <button
             onClick={() => setExpanded((curr) => !curr)}

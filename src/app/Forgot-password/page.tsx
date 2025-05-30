@@ -8,29 +8,24 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+      const { data, error } = await authClient.forgetPassword({
+        email,
+        redirectTo: "/Reset-password",
       });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        alert("If an account exists, a reset link has been sent.");
-      } else {
-        alert(data.error || "Something went wrong");
-      }
+      if (error) throw error;
+      setMessage("If the email exists, a reset link has been sent.");
     } catch (err) {
-      alert("Something went wrong. Please try again.");
+      setError(err.message || "Something went wrong");
     }
   };
 
@@ -54,7 +49,10 @@ export default function ForgotPasswordPage() {
                 required
               />
             </div>
-            <p className="flex justify-center">Error</p>
+            {message && <p className="mt-4 text-green-600">{message}</p>}
+            {error && (
+              <p className="text-red-500 text-sm text-center">{error}</p>
+            )}
           </CardContent>
           <CardFooter className="flex flex-col gap-2">
             <Button

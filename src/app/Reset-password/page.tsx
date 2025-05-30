@@ -1,17 +1,27 @@
 "use client";
-
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 
 export default function Page() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  const router = useRouter();
+
+  if (!token) {
+    return (
+      <div className="text-center text-red-500">
+        No token provided. Please request a password reset.
+      </div>
+    );
+  }
 
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,21 +31,27 @@ export default function Page() {
       return;
     }
 
+    setIsLoading(true);
+    setMessage("");
+
     try {
-      const res = await fetch("/api/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password }),
+      const { data, error } = await authClient.resetPassword({
+        newPassword: password,
+        token,
       });
 
-      const data = await res.json();
-      if (res.ok) {
-        setMessage("Password updated! You can now sign in.");
+      if (error) {
+        setMessage(error.message || "Failed to reset password");
       } else {
-        setMessage(data.error || "Invalid or expired token.");
+        setMessage("Password updated! You can now sign in.");
+        setTimeout(() => {
+          router.push("/Signin");
+        }, 3000);
       }
     } catch (err) {
       setMessage("Something went wrong. Try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -61,11 +77,11 @@ export default function Page() {
       <Button
         type="submit"
         className="w-full bg-emerald-500 hover:bg-emerald-600"
+        disabled={isLoading}
       >
-        Reset Password
+        {isLoading ? "Resetting..." : "Reset Password"}
       </Button>
-
-      {message && <p className="text-center text-sm text-red-500">{message}</p>}
+      {message && <p className="text-center text-sm text-emerald-500">{message}</p>}
     </form>
   );
 }

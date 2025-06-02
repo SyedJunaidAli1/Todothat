@@ -11,12 +11,13 @@
 - [x] Sidebar with pages
 - [x] Resend setup for mail
 - [x] Domain bought for Todothat from hostinger
-- [] Forgotpass and reset pass Wip
+- [x] Forgotpass and reset pass 
 - [] Avatar for PFP
 - [] Email verification for new Accounts
 - [] Profile Hamburger aka three dots setup
 - [] Top Loader for nextjs
 - [] Todo set fnc for user 
+- [] Todo set timer for notify
 - [] Todo notify by email
 
 

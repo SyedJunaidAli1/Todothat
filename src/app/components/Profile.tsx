@@ -13,6 +13,7 @@ import {
   DropdownMenuShortcut,
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "@/lib/methods/users";
+import { useRouter } from 'nextjs-toploader/app';
 
 const Profile = ({ expanded }: { expanded: boolean }) => {
   const { session } = useSession();

@@ -15,7 +15,7 @@
 - [x] Avatar for PFP
 - [] Email verification for new Accounts
 - [x] Profile DropDown menu aka three dots
-- [] Top Loader for nextjs
+- [x] Top Loader nextjs
 - [] Todo set fnc for user 
 - [] Todo set timer for notify
 - [] Todo notify by email

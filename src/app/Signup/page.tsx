@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { signUp } from "@/lib/methods/users";
-import { useRouter } from "next/navigation";
+import { useRouter } from 'nextjs-toploader/app';
 import React, { useState } from "react";
 import { toast } from "sonner";
 

@@ -1,4 +1,5 @@
 "use client";
+import { PagesTopLoader } from "nextjs-toploader/pages";
 import { Sidebar, SidebarItem } from "./components/Sidebar";
 import {
   CalendarDays,
@@ -43,6 +44,7 @@ export default function Home() {
 
   return (
     <div className="flex w-full h-screen">
+      <PagesTopLoader color="#50C878" />
       <Sidebar onItemSelect={handleItemSelect}>
         <SidebarItem
           icon={<CirclePlus />}

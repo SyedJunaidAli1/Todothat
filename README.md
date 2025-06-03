@@ -12,9 +12,9 @@
 - [x] Resend setup for mail
 - [x] Domain bought for Todothat from hostinger
 - [x] Forgotpass and reset pass 
-- [] Avatar for PFP
+- [x] Avatar for PFP
 - [] Email verification for new Accounts
-- [] Profile Hamburger aka three dots setup
+- [x] Profile DropDown menu aka three dots
 - [] Top Loader for nextjs
 - [] Todo set fnc for user 
 - [] Todo set timer for notify
@@ -22,4 +22,4 @@
 
 
 #known issue
-- [x] ApiError Failed to create user
+- [x] ApiError Failed to create use

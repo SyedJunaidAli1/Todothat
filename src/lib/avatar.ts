@@ -1,7 +1,6 @@
 import { createAvatar } from '@dicebear/core';
 import { botttsNeutral } from '@dicebear/collection';
 
-
 export async function generateAvatarDataUri(seed: string) {
     const avatar = createAvatar(botttsNeutral, {
         seed,

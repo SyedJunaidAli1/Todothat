@@ -3,6 +3,16 @@ import { useEffect, useState } from "react";
 import { MoreVertical } from "lucide-react";
 import { useSession } from "@/hooks/useSession";
 import { generateAvatarDataUri } from "@/lib/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+  DropdownMenuShortcut,
+} from "@/components/ui/dropdown-menu";
+import { signOut } from "@/lib/methods/users";
 
 const Profile = ({ expanded }: { expanded: boolean }) => {
   const { session } = useSession();
@@ -31,7 +41,22 @@ const Profile = ({ expanded }: { expanded: boolean }) => {
           <h4 className="font-semibold">{name}</h4>
           <span className="text-xs text-gray-600">{email}</span>
         </div>
-        <MoreVertical size={20} />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <MoreVertical size={22} />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="start">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>About</DropdownMenuItem>
+            <DropdownMenuItem>Privacy Police</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={signOut}>
+              Log out
+              <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

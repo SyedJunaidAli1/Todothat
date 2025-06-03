@@ -81,7 +81,9 @@ export default function Page() {
       >
         {isLoading ? "Resetting..." : "Reset Password"}
       </Button>
-      {message && <p className="text-center text-sm text-emerald-500">{message}</p>}
+      {message && (
+        <p className="text-center text-sm text-emerald-500">{message}</p>
+      )}
     </form>
   );
 }

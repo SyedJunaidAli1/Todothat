@@ -13,7 +13,8 @@
 - [x] Domain bought for Todothat from hostinger
 - [x] Forgotpass and reset pass 
 - [x] Avatar for PFP
-- [] Email verification for new Accounts
+- [x] Email verification for new Accounts
+- [] Email verification for mauall trigger
 - [x] Profile DropDown menu aka three dots
 - [x] Top Loader nextjs
 - [] Todo set fnc for user 

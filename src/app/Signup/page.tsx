@@ -25,6 +25,7 @@ const page = () => {
     try {
       await signUp(name, email, password);
       toast.success("Account created successfully 🎉");
+      toast.success("Email Verification Sent Valid for 24 hours");
       router.push("/");
     } catch (error) {
       setError("something went wrong in Signup");

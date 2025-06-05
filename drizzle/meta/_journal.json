@@ -15,6 +15,13 @@
       "when": 1748251221958,
       "tag": "0001_lame_ogun",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1749117333204,
+      "tag": "0002_demonic_leopardon",
+      "breakpoints": true
     }
   ]
 }

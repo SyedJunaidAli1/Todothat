@@ -51,15 +51,6 @@ export const verification = pgTable("verification", {
   updatedAt: timestamp("updated_at"),
 });
 
-// Password Reset Token table
-export const passwordResetToken = pgTable("password_reset_token", {
-  id: uuid("id").primaryKey().defaultRandom(), // ✅ auto-generates a UUID
-  email: text("email").notNull(),
-  token: text("token").notNull(),
-  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
-
 // Relations for all tables
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
@@ -79,11 +70,6 @@ export const verificationRelations = relations(verification, ({ one }) => ({
   user: one(user, { fields: [verification.identifier], references: [user.email] }),
 }));
 
-export const passwordResetTokenRelations = relations(passwordResetToken, ({ one }) => ({
-  user: one(user, { fields: [passwordResetToken.email], references: [user.email] }),
-}));
-
-
 // Todo table
 export const todo = pgTable("todo", {
   id: text("id").primaryKey(), // optional: use serial if local-only, or text if associated with users from auth
@@ -102,8 +88,6 @@ export const schema = {
   accountRelations,
   verificationRelations,
   todo,
-  passwordResetToken,
-  passwordResetTokenRelations,
 };
 
 

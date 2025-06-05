@@ -7,10 +7,12 @@ export const signIn = async (email: string, password: string) => {
     const res = await auth.api.signInEmail({
       body: { email, password },
     });
-    // Optional: return success message
-    return res
-  } catch (error) {
-    throw new Error("Failed to Sign in");
+    return res;
+  } catch (error: any) {
+    if (error.status === 403) {
+      throw new Error("Please verify your email address before signing in");
+    }
+    throw new Error(error.message || "Failed to sign in");
   }
 };
 

@@ -26,8 +26,8 @@ export default function ForgotPasswordPage() {
       });
       if (error) throw error;
       setMessage("If the email exists, a reset link has been sent.");
-    } catch (err) {
-      setError(err.message || "Something went wrong");
+    } catch (error) {
+      setError(error.message || "Something went wrong");
     }
   };
 

@@ -19,7 +19,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <main>
-            <NextTopLoader />
+            <NextTopLoader color="#50C878" />
             {children}
           </main>
           <Toaster richColors />

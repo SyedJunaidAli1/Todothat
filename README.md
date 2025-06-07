@@ -17,6 +17,7 @@
 - [] Email verification for mauall trigger
 - [x] Profile DropDown menu aka three dots
 - [x] Top Loader nextjs
+- [] Modal for Todo Task
 - [] Todo set fnc for user 
 - [] Todo set timer for notify
 - [] Todo notify by email

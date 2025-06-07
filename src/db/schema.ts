@@ -70,13 +70,15 @@ export const verificationRelations = relations(verification, ({ one }) => ({
   user: one(user, { fields: [verification.identifier], references: [user.email] }),
 }));
 
-// Todo table
-export const todo = pgTable("todo", {
-  id: text("id").primaryKey(), // optional: use serial if local-only, or text if associated with users from auth
-  text: text("text").notNull(),
-  done: boolean("done").default(false).notNull(),
-});
-
+export const tasks = pgTable("tasks", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id),
+  title: text("title").notNull(),
+  description: text("description"),
+  dueDate: timestamp("due_date"),
+  project: text("project").default("Inbox"),
+  createdAt: timestamp("created_at").defaultNow(),
+})
 
 export const schema = {
   user,
@@ -87,7 +89,7 @@ export const schema = {
   sessionRelations,
   accountRelations,
   verificationRelations,
-  todo,
+  tasks,
 };
 
 

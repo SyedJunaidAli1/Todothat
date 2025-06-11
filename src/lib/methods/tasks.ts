@@ -1,20 +1,29 @@
 "use server"
+// src/lib/methods/tasks.ts
 import { db } from "@/db/drizzle";
-import { authClient } from '../auth-client';
+import { tasks } from "@/db/schema";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
-export async function createTask(title: string, description?: string, dueDate?: Date, project?: string) {
-    const session = await authClient.getSession();
-    if (!session) throw new Error("Unauthorized");
-
-    const [newTask] = await db
-        .insert(tasks)
-        .values({
-            userId: session.user.id,
-            title,
-            description,
-            dueDate,
-            project: project || "Inbox",
-        })
-        .returning();
-    return newTask;
+export async function createTask(
+  title: string,
+  description: string,
+  dueDate: Date | undefined,
+  project: string
+) {
+  const requestHeaders = await headers();
+  const session = await auth.api.getSession({ headers: requestHeaders });
+  if (!session || !session.user || !session.user.id) {
+    throw new Error("Unauthorized: Please log in to create a task.");
+  }
+  return db
+    .insert(tasks)
+    .values({
+      userId: session.user.id,
+      title,
+      description,
+      dueDate,
+      project,
+    })
+    .returning();
 }

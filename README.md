@@ -17,11 +17,14 @@
 - [] Email verification for mauall trigger
 - [x] Profile DropDown menu aka three dots
 - [x] Top Loader nextjs
-- [] Modal for Todo Task
-- [] Todo set fnc for user 
+- [x] Modal for Todo Task
+- [x] Todo set fnc for user 
+- [] Todo save with or without Timezone 
 - [] Todo set timer for notify
 - [] Todo notify by email
+- [] learn about tanstack query
 
 
 #known issue
 - [x] ApiError Failed to create use
+- [] DialogTitle issue fix

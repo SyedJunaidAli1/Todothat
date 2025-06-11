@@ -15,13 +15,82 @@
 // import CompletedPage from "./components/CompletedPage";
 // import UpcomingPage from "./components/UpcomingPage";
 // import TodayPage from "./components/TodayPage";
-// import { useState } from "react";
+// import { useState, useEffect } from "react";
+// import { useRouter } from 'nextjs-toploader/app';
+// import { Button } from "@/components/ui/button";
+// import { Input } from "@/components/ui/input";
+// import { createTask } from "@/lib/methods/tasks";
+// import { Textarea } from "@/components/ui/textarea";
 
 // export default function Home() {
 //   const [activeItem, setActiveItem] = useState("");
-//   const handleItemSelect = (itemtext) => {
-//     setActiveItem(itemtext);
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const [isVisible, setIsVisible] = useState(false);
+//   const [title, setTitle] = useState("");
+//   const [description, setDescription] = useState("");
+//   const [dueDate, setDueDate] = useState("");
+//   const [dueTime, setDueTime] = useState("");
+//   const [project, setProject] = useState("Inbox");
+//   const [error, setError] = useState("");
+//   const router = useRouter();
+
+//   useEffect(() => {
+//     if (isModalOpen) {
+//       setIsVisible(true);
+//     } else {
+//       setIsVisible(false);
+//     }
+//   }, [isModalOpen]);
+
+//   const handleItemSelect = (itemText: string) => {
+//     if (itemText === "Add Task") {
+//       setIsModalOpen(true);
+//     } else {
+//       setActiveItem(itemText);
+//     }
 //   };
+
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     setError("");
+
+//     if (!title.trim()) {
+//       setError("Title is required");
+//       return;
+//     }
+
+//     try {
+//       let dueDateValue: Date | undefined;
+//       if (dueDate) {
+//         dueDateValue = new Date(dueDate);
+//         if (dueTime) {
+//           const [hours, minutes] = dueTime.split(":").map(Number);
+//           dueDateValue.setHours(hours, minutes);
+//         }
+//       }
+//       await createTask(title, description, dueDateValue, project);
+//       setIsModalOpen(false);
+//       setTitle("");
+//       setDescription("");
+//       setDueDate("");
+//       setDueTime("");
+//       setProject("Inbox");
+//       router.refresh();
+//     } catch (err: any) {
+//       setError(err.message || "Failed to create task");
+//     }
+//   };
+
+//   const handleClose = () => {
+//     setIsModalOpen(false);
+//     setTitle("");
+//     setDescription("");
+//     setDueDate("");
+//     setDueTime("");
+//     setProject("Inbox");
+//     setError("");
+//   };
+
 //   const renderContent = () => {
 //     switch (activeItem) {
 //       case "Inbox":
@@ -35,8 +104,8 @@
 //       default:
 //         return (
 //           <div className="p-4">
-//             <h2 className=" text-2xl font-bont">Welcome</h2>
-//             <p>Select and item to view its content.</p>
+//             <h2 className="text-2xl font-bold">Welcome</h2>
+//             <p>Select an item to view its content.</p>
 //           </div>
 //         );
 //     }
@@ -106,8 +175,84 @@
 //         <header className="p-4 flex justify-end">
 //           <ThemeToggle />
 //         </header>
-//         <main className=" p-6">{renderContent()}</main>
+//         <main className="p-6">{renderContent()}</main>
 //       </div>
+//       {isModalOpen && (
+//         <div
+//           className={`fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300 ease-in-out ${
+//             isVisible ? "opacity-100" : "opacity-0"
+//           }`}
+//         >
+//           <div
+//             className={`border-2 w-full max-w-md rounded-lg shadow-lg transform transition-all duration-300 ease-in-out ${
+//               isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+//             }`}
+//           >
+//             <form onSubmit={handleSubmit} className="p-6 space-y-3">
+//               <div>
+//                 <Input
+//                   type="text"
+//                   value={title}
+//                   onChange={(e) => setTitle(e.target.value)}
+//                   placeholder="What's your next task?"
+//                   className="w-full p-2 border rounded-md text-sm"
+//                   required
+//                 />
+//               </div>
+//               <div>
+//                 <Textarea
+//                   value={description}
+//                   onChange={(e) => setDescription(e.target.value)}
+//                   placeholder="Description"
+//                   className="w-full p-2 border rounded-md text-sm resize-none"
+//                   rows={2}
+//                 />
+//               </div>
+//               <div className="flex items-center space-x-2">
+//                 <Input
+//                   type="date"
+//                   value={dueDate}
+//                   onChange={(e) => setDueDate(e.target.value)}
+//                   className="w-auto text-sm rounded-md"
+//                 />
+//                 <Input
+//                   type="time"
+//                   value={dueTime}
+//                   onChange={(e) => setDueTime(e.target.value)}
+//                   className="w-auto text-sm rounded-md"
+//                 />
+//                 <select
+//                   value={project}
+//                   onChange={(e) => setProject(e.target.value)}
+//                   className="w-auto p-1 text-sm border rounded-md"
+//                 >
+//                   <option value="Inbox">Inbox</option>
+//                   <option value="Project 1">Project 1</option>
+//                   <option value="Project 2">Project 2</option>
+//                   <option value="Project 3">Project 3</option>
+//                 </select>
+//               </div>
+//               {error && <p className="text-red-500 text-sm">{error}</p>}
+//               <div className="flex justify-between items-center pt-2">
+//                 <Button
+//                   type="button"
+//                   variant="outline"
+//                   onClick={handleClose}
+//                   className="rounded-md"
+//                 >
+//                   Cancel
+//                 </Button>
+//                 <Button
+//                   type="submit"
+//                   className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
+//                 >
+//                   Add Task
+//                 </Button>
+//               </div>
+//             </form>
+//           </div>
+//         </div>
+//       )}
 //     </div>
 //   );
 // }
@@ -129,22 +274,33 @@ import InboxPage from "./components/InboxPage";
 import CompletedPage from "./components/CompletedPage";
 import UpcomingPage from "./components/UpcomingPage";
 import TodayPage from "./components/TodayPage";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter } from "nextjs-toploader/app";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createTask } from "@/lib/methods/tasks";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 
 export default function Home() {
   const [activeItem, setActiveItem] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [dueTime, setDueTime] = useState("");
   const [project, setProject] = useState("Inbox");
   const [error, setError] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    if (isModalOpen) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  }, [isModalOpen]);
 
   const handleItemSelect = (itemText: string) => {
     if (itemText === "Add Task") {
@@ -164,12 +320,20 @@ export default function Home() {
     }
 
     try {
-      const dueDateValue = dueDate ? new Date(dueDate) : undefined;
+      let dueDateValue: Date | undefined;
+      if (dueDate) {
+        dueDateValue = new Date(dueDate);
+        if (dueTime) {
+          const [hours, minutes] = dueTime.split(":").map(Number);
+          dueDateValue.setHours(hours, minutes);
+        }
+      }
       await createTask(title, description, dueDateValue, project);
       setIsModalOpen(false);
       setTitle("");
       setDescription("");
       setDueDate("");
+      setDueTime("");
       setProject("Inbox");
       router.refresh();
     } catch (err: any) {
@@ -182,6 +346,7 @@ export default function Home() {
     setTitle("");
     setDescription("");
     setDueDate("");
+    setDueTime("");
     setProject("Inbox");
     setError("");
   };
@@ -272,71 +437,82 @@ export default function Home() {
         </header>
         <main className="p-6">{renderContent()}</main>
       </div>
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center p-4">
-          <div className="border-2 w-full max-w-md rounded-lg shadow-lg">
-            <form onSubmit={handleSubmit} className="p-6 space-y-3">
-              <div>
-                <Input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="What's your next task?"
-                  className="w-full p-2 border rounded-md text-sm resize-none"
-                  required
-                />
-              </div>
-
-              <div>
-                <Textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Description"
-                  className="w-full p-2 border rounded-md text-sm resize-none"
-                  rows={2}
-                />
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="date"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
-                  className="w-auto text-sm rounded-md "
-                />
-
-                <select
-                  value={project}
-                  onChange={(e) => setProject(e.target.value)}
-                  className="w-auto p-1 text-sm border bg-gray-00 rounded-md"
-                >
-                  <option value="Inbox">Inbox</option>
-                  <option value="Project 1">Project 1</option>
-                  <option value="Project 2">Project 2</option>
-                  <option value="Project 3">Project 3</option>
-                </select>
-              </div>
-              {error && <p className="text-red-500 text-sm">{error}</p>}
-              <div className="flex justify-between items-center pt-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleClose}
-                  className="rounded-md"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
-                >
-                  Add Task
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <Dialog
+        open={isModalOpen}
+        onOpenChange={(open) => !open && handleClose()}
+      >
+        <DialogTrigger asChild>
+          <span className="hidden">Add Task</span>
+        </DialogTrigger>
+        <DialogContent
+          className={`border-2 w-full max-w-md rounded-lg shadow-lg p-2 ${
+            isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+          }`}
+        >
+          <form onSubmit={handleSubmit} className="p-6 space-y-3">
+            <div>
+              <Input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="What's your next task?"
+                className="w-full p-2 border rounded-md text-sm"
+                required
+              />
+            </div>
+            <div>
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Description"
+                className="w-full p-2 border rounded-md text-sm resize-none"
+                rows={2}
+              />
+            </div>
+            <div className="flex items-center space-x-2">
+              <Input
+                type="date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                className="w-auto text-sm rounded-md"
+              />
+              <Input
+                type="time"
+                value={dueTime}
+                onChange={(e) => setDueTime(e.target.value)}
+                className="w-auto text-sm rounded-md"
+              />
+              <select
+                value={project}
+                onChange={(e) => setProject(e.target.value)}
+                className="w-auto p-1 text-sm border rounded-md"
+              >
+                <option value="Inbox">Inbox</option>
+                <option value="Project 1">Project 1</option>
+                <option value="Project 2">Project 2</option>
+                <option value="Project 3">Project 3</option>
+              </select>
+            </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            <div className="flex justify-between items-center pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleClose}
+                className="rounded-md"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
+              >
+                Add Task
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

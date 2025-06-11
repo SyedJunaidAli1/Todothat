@@ -29,6 +29,20 @@
       "when": 1749291415061,
       "tag": "0003_natural_bromley",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1749630233352,
+      "tag": "0004_equal_karnak",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1749631469830,
+      "tag": "0005_condemned_wind_dancer",
+      "breakpoints": true
     }
   ]
 }

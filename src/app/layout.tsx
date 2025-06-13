@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ThemeProvider } from "@/components/ui/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
-import NextTopLoader from "nextjs-toploader";
+import ClientProvider from "./components/ClientProvider";
 
 export const metadata: Metadata = {
   title: "Todothat",
@@ -17,13 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <main>
-            <NextTopLoader color="#50C878" />
-            {children}
-          </main>
-          <Toaster richColors />
-        </ThemeProvider>
+        <ClientProvider>{children}</ClientProvider>
       </body>
     </html>
   );

@@ -1,9 +1,73 @@
-"use server"
-// src/lib/methods/tasks.ts
+// "use server"
+// // src/lib/methods/tasks.ts
+// import { db } from "@/db/drizzle";
+// import { tasks } from "@/db/schema";
+// import { auth } from "@/lib/auth";
+// import { headers } from "next/headers";
+
+// export async function createTask(
+//   title: string,
+//   description: string,
+//   dueDate: Date | undefined,
+//   project: string
+// ) {
+//   const requestHeaders = await headers();
+//   const session = await auth.api.getSession({ headers: requestHeaders });
+//   if (!session || !session.user || !session.user.id) {
+//     throw new Error("Unauthorized: Please log in to create a task.");
+//   }
+//   return db
+//     .insert(tasks)
+//     .values({
+//       userId: session.user.id,
+//       title,
+//       description,
+//       dueDate,
+//       project,
+//     })
+//     .returning();
+// }
+
+'use server'
 import { db } from "@/db/drizzle";
 import { tasks } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { eq, and } from "drizzle-orm";
 import { headers } from "next/headers";
+import { auth } from "../auth";
+
+
+// Define the Task type (based on your schema)
+export interface Task {
+  id: number;
+  title: string;
+  description: string | null;
+  dueDate: Date | null;
+  project: string;
+  userId: string;
+  createdAt: Date;
+}
+
+export async function getTasks(project: string = "Inbox"): Promise<Task[]> {
+  const requestHeaders = await headers();
+  const session = await auth.api.getSession({ headers: requestHeaders });
+
+  if (!session || !session.user || !session.user.id) {
+    throw new Error("Unauthorized");
+  }
+
+  const result = await db
+    .select()
+    .from(tasks)
+    .where(
+      and(
+        eq(tasks.userId, session.user.id),
+        eq(tasks.project, project)
+      )
+    )
+    .orderBy(tasks.createdAt);
+
+  return result;
+}
 
 export async function createTask(
   title: string,
@@ -13,17 +77,65 @@ export async function createTask(
 ) {
   const requestHeaders = await headers();
   const session = await auth.api.getSession({ headers: requestHeaders });
+
   if (!session || !session.user || !session.user.id) {
-    throw new Error("Unauthorized: Please log in to create a task.");
+    throw new Error("Unauthorized");
   }
-  return db
-    .insert(tasks)
-    .values({
-      userId: session.user.id,
+
+  await db.insert(tasks).values({
+    title,
+    description,
+    dueDate,
+    project,
+    userId: session.user.id,
+  });
+}
+
+export async function updateTask(
+  taskId: number,
+  title: string,
+  description: string,
+  dueDate: Date | undefined,
+  project: string
+) {
+  const requestHeaders = await headers();
+  const session = await auth.api.getSession({ headers: requestHeaders });
+
+  if (!session || !session.user || !session.user.id) {
+    throw new Error("Unauthorized");
+  }
+
+  await db
+    .update(tasks)
+    .set({
       title,
       description,
       dueDate,
       project,
+      updatedAt: new Date(),
     })
-    .returning();
+    .where(
+      and(
+        eq(tasks.id, taskId),
+        eq(tasks.userId, session.user.id)
+      )
+    );
+}
+
+export async function deleteTask(taskId: number) {
+  const requestHeaders = await headers();
+  const session = await auth.api.getSession({ headers: requestHeaders });
+
+  if (!session || !session.user || !session.user.id) {
+    throw new Error("Unauthorized");
+  }
+
+  await db
+    .delete(tasks)
+    .where(
+      and(
+        eq(tasks.id, taskId),
+        eq(tasks.userId, session.user.id)
+      )
+    );
 }

@@ -1,4 +1,4 @@
-#TODO 
+#TODO
 
 - [x] Make sidebar with all the features
 - [x] make theme toggle button
@@ -11,20 +11,26 @@
 - [x] Sidebar with pages
 - [x] Resend setup for mail
 - [x] Domain bought for Todothat from hostinger
-- [x] Forgotpass and reset pass 
+- [x] Forgotpass and reset pass
 - [x] Avatar for PFP
 - [x] Email verification for new Accounts
 - [] Email verification for mauall trigger
 - [x] Profile DropDown menu aka three dots
 - [x] Top Loader nextjs
 - [x] Modal for Todo Task
-- [x] Todo set fnc for user 
-- [] Todo save with or without Timezone 
+- [x] Todo set fnc for user
+- [x] Inbox Page
+- [] Today Page
+- [] Upcoming Page
+- [] Completed Page
+- [] Search Button
+- [] My Projects with Dynamic Project
+- [] Todo save with or without Timezone
 - [] Todo set timer for notify
 - [] Todo notify by email
-- [] learn about tanstack query
-
+- [x] learn about tanstack query
 
 #known issue
+
 - [x] ApiError Failed to create use
-- [] DialogTitle issue fix
+- [x] DialogTitle issue fix

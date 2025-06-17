@@ -22,7 +22,8 @@
 - [x] Inbox Page
 - [x] Today Page
 - [] Today Page Reminder update automatically
-- [] Upcoming Page
+- [x] Upcoming Page
+- [] Upcoming Page Reminder update automatically
 - [] Completed Page
 - [] Search Bar for Search btn
 - [] My Projects with Dynamic Project

@@ -20,7 +20,8 @@
 - [x] Modal for Todo Task
 - [x] Todo set fnc for user
 - [x] Inbox Page
-- [] Today Page
+- [x] Today Page
+- [] Today Page Reminder update automatically
 - [] Upcoming Page
 - [] Completed Page
 - [] Search Button

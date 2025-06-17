@@ -1,10 +1,9 @@
 'use server'
 import { db } from "@/db/drizzle";
 import { tasks } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import { headers } from "next/headers";
 import { auth } from "../auth";
-
 
 // Define the Task type (based on your schema)
 export interface Task {
@@ -17,7 +16,10 @@ export interface Task {
   createdAt: Date;
 }
 
-export async function getTasks(project: string = "Inbox"): Promise<Task[]> {
+export async function getTasks(
+  project: string = "Inbox",
+  dueDate?: Date
+): Promise<Task[]> {
   const requestHeaders = await headers();
   const session = await auth.api.getSession({ headers: requestHeaders });
 
@@ -25,17 +27,34 @@ export async function getTasks(project: string = "Inbox"): Promise<Task[]> {
     throw new Error("Unauthorized");
   }
 
-  const result = await db
+  let query = db
     .select()
     .from(tasks)
     .where(
       and(
         eq(tasks.userId, session.user.id),
-        eq(tasks.project, project)
+        project ? eq(tasks.project, project) : sql`TRUE`
       )
     )
-    .orderBy(tasks.createdAt);
+    .orderBy(tasks);
 
+  if (dueDate) {
+    const startOfDay = new Date(dueDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(dueDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    query = query.where(
+      and(
+        eq(tasks.userId, session.user.id),
+        project ? eq(tasks.project, project) : sql`TRUE`,
+        sql`${tasks.dueDate} >= ${startOfDay.toISOString()}`,
+        sql`${tasks.dueDate} <= ${endOfDay.toISOString()}`
+      )
+    );
+  }
+
+  const result = await query;
   return result;
 }
 

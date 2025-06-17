@@ -24,7 +24,7 @@
 - [] Today Page Reminder update automatically
 - [] Upcoming Page
 - [] Completed Page
-- [] Search Button
+- [] Search Bar for Search btn
 - [] My Projects with Dynamic Project
 - [] Todo save with or without Timezone
 - [] Todo set timer for notify

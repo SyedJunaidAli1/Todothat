@@ -103,7 +103,13 @@ export default function Home() {
 
       if (editingTask) {
         // Update existing task
-        await updateTask(editingTask.id, title, description, dueDateValue, project);
+        await updateTask(
+          editingTask.id,
+          title,
+          description,
+          dueDateValue,
+          project
+        );
         toast.success("Task updated successfully!");
       } else {
         // Create new task
@@ -140,11 +146,26 @@ export default function Home() {
   const renderContent = () => {
     switch (activeItem) {
       case "Inbox":
-        return <InboxPage onAddTask={() => handleItemSelect("Add Task")} onEditTask={handleEditTask} />;
+        return (
+          <InboxPage
+            onAddTask={() => handleItemSelect("Add Task")}
+            onEditTask={handleEditTask}
+          />
+        );
       case "Today":
-        return <TodayPage onAddTask={() => handleItemSelect("Add Task")} onEditTask={handleEditTask} />;
+        return (
+          <TodayPage
+            onAddTask={() => handleItemSelect("Add Task")}
+            onEditTask={handleEditTask}
+          />
+        );
       case "Upcoming":
-        return <UpcomingPage />;
+        return (
+          <UpcomingPage
+            onAddTask={() => handleItemSelect("Add Task")}
+            onEditTask={handleEditTask}
+          />
+        );
       case "Completed":
         return <CompletedPage />;
       default:

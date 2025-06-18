@@ -1,5 +1,4 @@
 "use client";
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getTasks, Task, deleteTask } from "@/lib/methods/tasks";
 import { format, isTomorrow } from "date-fns";

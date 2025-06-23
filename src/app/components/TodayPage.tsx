@@ -48,31 +48,7 @@ const TodayPage = ({ onAddTask, onEditTask }: TodayPageProps) => {
     queryKey: ["tasks", "Today", today.toISOString().split("T")[0]],
     queryFn: () => getTasks(undefined, today), // Fetch tasks for all projects, due today
   });
-
-  // Mutation for deleting a task
-  const deleteMutation = useMutation({
-    mutationFn: deleteTask,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", "Today"] });
-      toast.success("Task deleted successfully!");
-    },
-    onError: (err: any) => {
-      toast.error(err.message || "Failed to delete task");
-    },
-  });
-
-  // Format due time (since all tasks are for today)
-  const formatDueTime = (dueDate: Date | null) => {
-    if (!dueDate) return "No due time";
-    return `${format(dueDate, "HH:mm")} IST`;
-  };
-
-  // Check if a task is overdue using currentTime
-  const isOverdue = (dueDate: Date | null) => {
-    if (!dueDate) return false;
-    return dueDate < currentTime;
-  };
-
+  
   // Default content when there are no tasks for today
   const defaultContent = (
     <div className="flex flex-col gap-2 px-6">
@@ -126,65 +102,7 @@ const TodayPage = ({ onAddTask, onEditTask }: TodayPageProps) => {
       </div>
       <ul className="space-y-4">
         {tasks.map((task) => (
-          <li
-            key={task.id}
-            className={`p-4 border rounded-lg shadow-sm ${
-              isOverdue(task.dueDate) ? "border-red-500" : "border-emerald-200"
-            }`}
-          >
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="text-lg font-semibold">{task.title}</h3>
-                {task.description && (
-                  <p className="text-sm">{task.description}</p>
-                )}
-                <p className="text-sm">
-                  Due: {formatDueTime(task.dueDate)}
-                  {isOverdue(task.dueDate) && (
-                    <span className="text-red-500 ml-2">(Overdue)</span>
-                  )}
-                </p>
-                <p className="text-sm">Project: {task.project}</p>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onEditTask(task)}
-                >
-                  Edit
-                </Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      disabled={deleteMutation.isPending}
-                    >
-                      {deleteMutation.isPending ? "Deleting..." : "Delete"}
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently
-                        delete the task "{task.title}".
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => deleteMutation.mutate(task.id)}
-                      >
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
-            </div>
-          </li>
+          <TaskComponent task={task} onEditTask={onEditTask} key={task.id} />
         ))}
       </ul>
     </div>
@@ -192,3 +110,106 @@ const TodayPage = ({ onAddTask, onEditTask }: TodayPageProps) => {
 };
 
 export default TodayPage;
+
+
+
+const TaskComponent = ({task, onEditTask}: {task: Task, onEditTask: (task: Task) => void}) => {
+  const [isOverdue, setIsOverdue] = useState(() => {
+    const dueDate = task.dueDate
+    const currentTime = new Date()
+    if (!dueDate) return false;
+    return dueDate < currentTime
+  })
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const dueDate = task.dueDate
+      const currentTime = new Date()
+      if (!dueDate) return false;
+      // console.log('Current time: ', currentTime, ', Due date: ', dueDate, ', Overdue: ', !!(dueDate < currentTime))
+      setIsOverdue(dueDate < currentTime)
+    }, 1000)
+  }, [])
+
+  // Format due time (since all tasks are for today)
+  const formatDueTime = (dueDate: Date | null) => {
+    if (!dueDate) return "No due time";
+    return `${format(dueDate, "HH:mm")} IST`;
+  };
+
+  // Mutation for deleting a task
+  const deleteMutation = useMutation({
+    mutationFn: deleteTask,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", "Today"] });
+      toast.success("Task deleted successfully!");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Failed to delete task");
+    },
+  });
+
+  return (
+    <li
+      key={task.id}
+      className={`p-4 border rounded-lg shadow-sm ${
+        isOverdue ? "border-red-500" : "border-emerald-200"
+      }`}
+    >
+      <div className="flex justify-between items-start">
+        <div>
+          <h3 className="text-lg font-semibold">{task.title}</h3>
+          {task.description && (
+            <p className="text-sm">{task.description}</p>
+          )}
+          <p className="text-sm">
+            Due: {formatDueTime(task.dueDate)}
+            {isOverdue && (
+              <span className="text-red-500 ml-2">(Overdue)</span>
+            )}
+          </p>
+          <p className="text-sm">Project: {task.project}</p>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onEditTask(task)}
+          >
+            Edit
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="destructive"
+                size="sm"
+                disabled={deleteMutation.isPending}
+              >
+                {deleteMutation.isPending ? "Deleting..." : "Delete"}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently
+                  delete the task "{task.title}".
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => deleteMutation.mutate(task.id)}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </div>
+    </li>
+  )
+}

@@ -21,7 +21,7 @@
 - [x] Todo set fnc for user
 - [x] Inbox Page
 - [x] Today Page
-- [] Today Page Reminder update automatically
+- [x] Today Page Reminder update automatically
 - [x] Upcoming Page
 - [] Upcoming Page Reminder update automatically
 - [] Completed Page
@@ -31,6 +31,9 @@
 - [] Todo set timer for notify
 - [] Todo notify by email
 - [x] learn about tanstack query
+- [x] drizzle default now with timezone
+- [] (new Date()).toISOString() 
+- [] useEffect for 
 
 #known issue
 

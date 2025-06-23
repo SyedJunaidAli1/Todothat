@@ -14,12 +14,14 @@ export interface Task {
   project: string;
   userId: string;
   createdAt: Date;
+  completed: boolean;
 }
 
 export async function getTasks(
   project?: string,
   dueDate?: Date,
-  dueAfter?: Date
+  dueAfter?: Date,
+  completed?: boolean
 ): Promise<Task[]> {
   const requestHeaders = await headers();
   const session = await auth.api.getSession({ headers: requestHeaders });
@@ -34,10 +36,10 @@ export async function getTasks(
     .where(
       and(
         eq(tasks.userId, session.user.id),
-        project ? eq(tasks.project, project) : sql`TRUE`
+        project ? eq(tasks.project, project) : sql`TRUE`,
+        completed !== undefined ? eq(tasks.completed, completed) : sql`TRUE`
       )
-    )
-    .orderBy(tasks);
+    );
 
   if (dueDate) {
     const startOfDay = new Date(dueDate);
@@ -49,6 +51,7 @@ export async function getTasks(
       and(
         eq(tasks.userId, session.user.id),
         project ? eq(tasks.project, project) : sql`TRUE`,
+        completed !== undefined ? eq(tasks.completed, completed) : sql`TRUE`,
         sql`${tasks.dueDate} >= ${startOfDay.toISOString()}`,
         sql`${tasks.dueDate} <= ${endOfDay.toISOString()}`
       )
@@ -63,6 +66,7 @@ export async function getTasks(
       and(
         eq(tasks.userId, session.user.id),
         project ? eq(tasks.project, project) : sql`TRUE`,
+        completed !== undefined ? eq(tasks.completed, completed) : sql`TRUE`,
         sql`${tasks.dueDate} > ${endOfDay.toISOString()}`
       )
     );
@@ -91,6 +95,7 @@ export async function createTask(
     dueDate,
     project,
     userId: session.user.id,
+    completed: false, // Explicitly set to false
   });
 }
 
@@ -99,7 +104,8 @@ export async function updateTask(
   title: string,
   description: string,
   dueDate: Date | undefined,
-  project: string
+  project: string,
+  completed: boolean
 ) {
   const requestHeaders = await headers();
   const session = await auth.api.getSession({ headers: requestHeaders });
@@ -115,6 +121,7 @@ export async function updateTask(
       description,
       dueDate,
       project,
+      completed,
       updatedAt: new Date(),
     })
     .where(

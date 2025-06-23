@@ -23,8 +23,9 @@
 - [x] Today Page
 - [x] Today Page Reminder update automatically
 - [x] Upcoming Page
+- [] inbpx page complete task shouldnt be there
 - [] Upcoming Page Reminder update automatically
-- [] Completed Page
+- [x] Completed Page
 - [] Search Bar for Search btn
 - [] My Projects with Dynamic Project
 - [] Todo save with or without Timezone

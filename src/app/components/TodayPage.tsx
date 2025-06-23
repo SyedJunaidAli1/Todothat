@@ -1,8 +1,260 @@
+// "use client";
+// import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+// import { getTasks, Task, deleteTask, updateTask } from "@/lib/methods/tasks";
+// import { format } from "date-fns";
+// import { Button } from "@/components/ui/button";
+// import { Checkbox } from "@/components/ui/checkbox";
+// import {
+//   AlertDialog,
+//   AlertDialogAction,
+//   AlertDialogCancel,
+//   AlertDialogContent,
+//   AlertDialogDescription,
+//   AlertDialogFooter,
+//   AlertDialogHeader,
+//   AlertDialogTitle,
+//   AlertDialogTrigger,
+// } from "@/components/ui/alert-dialog";
+// import { toast } from "sonner";
+// import { useState, useEffect } from "react";
+
+// interface TodayPageProps {
+//   onAddTask: () => void;
+//   onEditTask: (task: Task) => void;
+// }
+
+// const TodayPage = ({ onAddTask, onEditTask }: TodayPageProps) => {
+//   const queryClient = useQueryClient();
+
+//   // State to track the current time, updated every minute
+//   const [currentTime, setCurrentTime] = useState(new Date()); // June 23, 2025, 04:11 PM IST
+
+//   // Update currentTime every minute
+//   useEffect(() => {
+//     const interval = setInterval(() => {
+//       setCurrentTime(new Date());
+//     }, 60 * 1000); // Update every minute
+
+//     // Clean up the interval on component unmount
+//     return () => clearInterval(interval);
+//   }, []);
+
+//   // Fetch tasks due today using TanStack Query, excluding completed tasks
+//   const today = new Date(); // June 23, 2025, 04:11 PM IST
+//   const {
+//     data: tasks = [],
+//     isLoading,
+//     error,
+//   } = useQuery<Task[]>({
+//     queryKey: ["tasks", "Today", today.toISOString().split("T")[0]],
+//     queryFn: () => getTasks(undefined, today, undefined, false), // Fetch only incomplete tasks due today
+//   });
+
+//   // Default content when there are no tasks for today
+//   const defaultContent = (
+//     <div className="flex flex-col gap-2 px-6">
+//       <h2 className="text-2xl">Today</h2>
+//       <h3>No tasks for today</h3>
+//       <p>Add a task to get started with your day!</p>
+//       <button
+//         onClick={onAddTask}
+//         className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
+//       >
+//         Add Task
+//       </button>
+//     </div>
+//   );
+
+//   // Handle loading and error states
+//   if (isLoading) {
+//     return (
+//       <div className="flex flex-col gap-2 px-6">
+//         <h2 className="text-2xl">Today</h2>
+//         <p>Loading tasks...</p>
+//       </div>
+//     );
+//   }
+
+//   if (error) {
+//     return (
+//       <div className="flex flex-col gap-2 px-6">
+//         <h2 className="text-2xl">Today</h2>
+//         <p className="text-red-500">Failed to load tasks: {error.message}</p>
+//       </div>
+//     );
+//   }
+
+//   // If there are no tasks for today, show the default content
+//   if (tasks.length === 0) {
+//     return defaultContent;
+//   }
+
+//   // If there are tasks, display them in a list
+//   return (
+//     <div className="flex flex-col gap-4 px-6">
+//       <div className="flex justify-between items-center">
+//         <h2 className="text-2xl">Today</h2>
+//         <button
+//           onClick={onAddTask}
+//           className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
+//         >
+//           Add Task
+//         </button>
+//       </div>
+//       <ul className="space-y-4">
+//         {tasks.map((task) => (
+//           <TaskComponent task={task} onEditTask={onEditTask} key={task.id} />
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// };
+
+// export default TodayPage;
+
+// const TaskComponent = ({
+//   task,
+//   onEditTask,
+// }: {
+//   task: Task;
+//   onEditTask: (task: Task) => void;
+// }) => {
+//   const [isOverdue, setIsOverdue] = useState(() => {
+//     const dueDate = task.dueDate;
+//     const currentTime = new Date();
+//     if (!dueDate) return false;
+//     return dueDate < currentTime;
+//   });
+
+//   const queryClient = useQueryClient();
+
+//   useEffect(() => {
+//     const interval = setInterval(() => {
+//       const dueDate = task.dueDate;
+//       const currentTime = new Date();
+//       if (!dueDate) return;
+//       setIsOverdue(dueDate < currentTime);
+//     }, 1000);
+//     return () => clearInterval(interval);
+//   }, [task.dueDate]);
+
+//   // Format due time (since all tasks are for today)
+//   const formatDueTime = (dueDate: Date | null) => {
+//     if (!dueDate) return "No due time";
+//     return `${format(dueDate, "HH:mm")} IST`;
+//   };
+
+//   // Mutation for deleting a task
+//   const deleteMutation = useMutation({
+//     mutationFn: deleteTask,
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({ queryKey: ["tasks", "Today"] });
+//       toast.success("Task deleted successfully!");
+//     },
+//     onError: (err: any) => {
+//       toast.error(err.message || "Failed to delete task");
+//     },
+//   });
+
+//   // Mutation for completing a task
+//   const completeMutation = useMutation({
+//     mutationFn: (params: { taskId: number; title: string; description: string; dueDate: Date | undefined; project: string; completed: boolean }) =>
+//       updateTask(params.taskId, params.title, params.description, params.dueDate, params.project, params.completed),
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({ queryKey: ["tasks", "Today"] });
+//       queryClient.invalidateQueries({ queryKey: ["tasks", "Completed"] });
+//       toast.success("Task marked as completed!");
+//     },
+//     onError: (err: any) => {
+//       toast.error(err.message || "Failed to complete task");
+//     },
+//   });
+
+//   const [isCompleted, setIsCompleted] = useState(false);
+
+//   const handleCompleteChange = (checked: boolean) => {
+//     setIsCompleted(checked);
+//     if (checked) {
+//       completeMutation.mutate({
+//         taskId: task.id,
+//         title: task.title,
+//         description: task.description || "",
+//         dueDate: task.dueDate,
+//         project: task.project,
+//         completed: true, // Force completed: true when checked
+//       });
+//     }
+//     // Disable unticking effect for now
+//   };
+
+//   return (
+//     <li
+//       key={task.id}
+//       className={`p-4 border rounded-lg shadow-sm ${
+//         isOverdue ? "border-red-500" : "border-emerald-200"
+//       }`}
+//     >
+//       <div className="flex justify-between items-start">
+//         <div>
+//           <h3 className="text-lg font-semibold">{task.title}</h3>
+//           {task.description && <p className="text-sm">{task.description}</p>}
+//           <p className="text-sm">
+//             Due: {formatDueTime(task.dueDate)}
+//             {isOverdue && <span className="text-red-500 ml-2">(Overdue)</span>}
+//           </p>
+//           <p className="text-sm">Project: {task.project}</p>
+//         </div>
+//         <div className="flex gap-2">
+//           <Button variant="outline" size="sm" onClick={() => onEditTask(task)}>
+//             Edit
+//           </Button>
+//           <Checkbox
+//             id={`complete-${task.id}`}
+//             checked={isCompleted}
+//             onCheckedChange={handleCompleteChange}
+//             disabled={completeMutation.isPending}
+//           />
+//           <AlertDialog>
+//             <AlertDialogTrigger asChild>
+//               <Button
+//                 variant="destructive"
+//                 size="sm"
+//                 disabled={deleteMutation.isPending}
+//               >
+//                 {deleteMutation.isPending ? "Deleting..." : "Delete"}
+//               </Button>
+//             </AlertDialogTrigger>
+//             <AlertDialogContent>
+//               <AlertDialogHeader>
+//                 <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+//                 <AlertDialogDescription>
+//                   This action cannot be undone. This will permanently delete the
+//                   task "{task.title}".
+//                 </AlertDialogDescription>
+//               </AlertDialogHeader>
+//               <AlertDialogFooter>
+//                 <AlertDialogCancel>Cancel</AlertDialogCancel>
+//                 <AlertDialogAction
+//                   onClick={() => deleteMutation.mutate(task.id)}
+//                 >
+//                   Delete
+//                 </AlertDialogAction>
+//               </AlertDialogFooter>
+//             </AlertDialogContent>
+//           </AlertDialog>
+//         </div>
+//       </div>
+//     </li>
+//   );
+// };
+
 "use client";
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getTasks, Task, deleteTask } from "@/lib/methods/tasks";
+import { getTasks, Task, deleteTask, updateTask } from "@/lib/methods/tasks";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,7 +278,7 @@ const TodayPage = ({ onAddTask, onEditTask }: TodayPageProps) => {
   const queryClient = useQueryClient();
 
   // State to track the current time, updated every minute
-  const [currentTime, setCurrentTime] = useState(new Date()); // June 17, 2025, 02:44 PM IST
+  const [currentTime, setCurrentTime] = useState(new Date()); // June 23, 2025, 05:13 PM IST
 
   // Update currentTime every minute
   useEffect(() => {
@@ -38,17 +290,17 @@ const TodayPage = ({ onAddTask, onEditTask }: TodayPageProps) => {
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch tasks due today using TanStack Query
-  const today = new Date(); // June 17, 2025, 02:44 PM IST
+  // Fetch tasks due today using TanStack Query, excluding completed tasks
+  const today = new Date(); // June 23, 2025, 05:13 PM IST
   const {
     data: tasks = [],
     isLoading,
     error,
   } = useQuery<Task[]>({
     queryKey: ["tasks", "Today", today.toISOString().split("T")[0]],
-    queryFn: () => getTasks(undefined, today), // Fetch tasks for all projects, due today
+    queryFn: () => getTasks(undefined, today, undefined, false), // Fetch only incomplete tasks due today
   });
-  
+
   // Default content when there are no tasks for today
   const defaultContent = (
     <div className="flex flex-col gap-2 px-6">
@@ -111,27 +363,31 @@ const TodayPage = ({ onAddTask, onEditTask }: TodayPageProps) => {
 
 export default TodayPage;
 
-
-
-const TaskComponent = ({task, onEditTask}: {task: Task, onEditTask: (task: Task) => void}) => {
+const TaskComponent = ({
+  task,
+  onEditTask,
+}: {
+  task: Task;
+  onEditTask: (task: Task) => void;
+}) => {
   const [isOverdue, setIsOverdue] = useState(() => {
-    const dueDate = task.dueDate
-    const currentTime = new Date()
+    const dueDate = task.dueDate;
+    const currentTime = new Date();
     if (!dueDate) return false;
-    return dueDate < currentTime
-  })
+    return dueDate < currentTime;
+  });
 
   const queryClient = useQueryClient();
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const dueDate = task.dueDate
-      const currentTime = new Date()
-      if (!dueDate) return false;
-      // console.log('Current time: ', currentTime, ', Due date: ', dueDate, ', Overdue: ', !!(dueDate < currentTime))
-      setIsOverdue(dueDate < currentTime)
-    }, 1000)
-  }, [])
+      const dueDate = task.dueDate;
+      const currentTime = new Date();
+      if (!dueDate) return;
+      setIsOverdue(dueDate < currentTime);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [task.dueDate]);
 
   // Format due time (since all tasks are for today)
   const formatDueTime = (dueDate: Date | null) => {
@@ -151,6 +407,52 @@ const TaskComponent = ({task, onEditTask}: {task: Task, onEditTask: (task: Task)
     },
   });
 
+  // Mutation for completing a task
+  const completeMutation = useMutation({
+    mutationFn: (params: {
+      taskId: number;
+      title: string;
+      description: string;
+      dueDate: Date | undefined;
+      project: string;
+      completed: boolean;
+    }) =>
+      updateTask(
+        params.taskId,
+        params.title,
+        params.description,
+        params.dueDate,
+        params.project,
+        params.completed
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", "Today"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", "Completed"] });
+      toast.success("Task marked as completed!");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Failed to complete task");
+    },
+  });
+
+  const [isCompleted, setIsCompleted] = useState(false);
+
+  const handleCompleteChange = (checked: boolean) => {
+    setIsCompleted(checked);
+    if (checked) {
+      const audio = new Audio("/simple-notify.mp3");
+      audio.play().catch((err) => console.error("Audio play failed:", err));
+      completeMutation.mutate({
+        taskId: task.id,
+        title: task.title,
+        description: task.description || "",
+        dueDate: task.dueDate,
+        project: task.project,
+        completed: true,
+      });
+    }
+  };
+
   return (
     <li
       key={task.id}
@@ -159,25 +461,27 @@ const TaskComponent = ({task, onEditTask}: {task: Task, onEditTask: (task: Task)
       }`}
     >
       <div className="flex justify-between items-start">
-        <div>
-          <h3 className="text-lg font-semibold">{task.title}</h3>
-          {task.description && (
-            <p className="text-sm">{task.description}</p>
-          )}
-          <p className="text-sm">
-            Due: {formatDueTime(task.dueDate)}
-            {isOverdue && (
-              <span className="text-red-500 ml-2">(Overdue)</span>
-            )}
-          </p>
-          <p className="text-sm">Project: {task.project}</p>
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id={`complete-${task.id}`}
+            checked={isCompleted}
+            onCheckedChange={handleCompleteChange}
+            disabled={completeMutation.isPending}
+          />
+          <div>
+            <h3 className="text-lg font-semibold">{task.title}</h3>
+            {task.description && <p className="text-sm">{task.description}</p>}
+            <p className="text-sm">
+              Due: {formatDueTime(task.dueDate)}
+              {isOverdue && (
+                <span className="text-red-500 ml-2">(Overdue)</span>
+              )}
+            </p>
+            <p className="text-sm">Project: {task.project}</p>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onEditTask(task)}
-          >
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => onEditTask(task)}>
             Edit
           </Button>
           <AlertDialog>
@@ -194,8 +498,8 @@ const TaskComponent = ({task, onEditTask}: {task: Task, onEditTask: (task: Task)
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone. This will permanently
-                  delete the task "{task.title}".
+                  This action cannot be undone. This will permanently delete the
+                  task "{task.title}".
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -211,5 +515,5 @@ const TaskComponent = ({task, onEditTask}: {task: Task, onEditTask: (task: Task)
         </div>
       </div>
     </li>
-  )
-}
+  );
+};

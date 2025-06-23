@@ -1,20 +1,7 @@
 "use client";
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getTasks, Task, deleteTask } from "@/lib/methods/tasks";
 import { format } from "date-fns";
-import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 
 interface CompletedPageProps {
@@ -97,53 +84,15 @@ const CompletedPage = ({ onEditTask }: CompletedPageProps) => {
           >
             <div className="flex justify-between items-start">
               <div>
-                <h3 className="text-lg font-semibold">
-                  {task.title}
-                </h3>
+                <h3 className="text-lg font-semibold">{task.title}</h3>
                 {task.description && (
                   <p className="text-s">{task.description}</p>
                 )}
-                <p className="text-sm">
-                  Due: {formatDueDate(task.dueDate)}
-                </p>
+                <p className="text-sm">Due: {formatDueDate(task.dueDate)}</p>
                 <p className="text-md">Project: {task.project}</p>
               </div>
               <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onEditTask(task)}
-                >
-                  Edit
-                </Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      disabled={deleteMutation.isPending}
-                    >
-                      {deleteMutation.isPending ? "Deleting..." : "Delete"}
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently
-                        delete the task "{task.title}".
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => deleteMutation.mutate(task.id)}
-                      >
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                {/* Removed Edit and Delete buttons */}
               </div>
             </div>
           </li>

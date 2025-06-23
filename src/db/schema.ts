@@ -59,6 +59,7 @@ export const tasks = pgTable("tasks", {
   dueDate: timestamp("due_date", { withTimezone: true }),
   project: text("project").default("Inbox"),
   createdAt: timestamp("created_at").defaultNow(),
+  completed: boolean("completed").default(false).notNull(), // New
 })
 
 export const schema = {

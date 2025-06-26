@@ -14,7 +14,7 @@
 - [x] Forgotpass and reset pass
 - [x] Avatar for PFP
 - [x] Email verification for new Accounts
-- [] Email verification for mauall trigger
+- [] Email verification for mauall trigger Wip and testing
 - [x] Profile DropDown menu aka three dots
 - [x] Top Loader nextjs
 - [x] Modal for Todo Task
@@ -23,7 +23,8 @@
 - [x] Today Page
 - [x] Today Page Reminder update automatically
 - [x] Upcoming Page
-- [] inbpx page complete task shouldnt be there
+- [x] task compete tick works but complete boolen value stays false in the DB
+- [x] inbpx page complete task shouldnt be there
 - [] Upcoming Page Reminder update automatically
 - [x] Completed Page
 - [] Search Bar for Search btn

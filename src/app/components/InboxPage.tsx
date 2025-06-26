@@ -1,8 +1,9 @@
 "use client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getTasks, Task, deleteTask } from "@/lib/methods/tasks";
-import { format, isToday, isTomorrow } from "date-fns";
+import { getTasks, Task, updateTask, deleteTask } from "@/lib/methods/tasks";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,6 +16,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { useState, useEffect } from "react";
 
 interface InboxPageProps {
   onAddTask: () => void;
@@ -24,46 +26,22 @@ interface InboxPageProps {
 const InboxPage = ({ onAddTask, onEditTask }: InboxPageProps) => {
   const queryClient = useQueryClient();
 
-  // Fetch tasks using TanStack Query
-  const { data: tasks = [], isLoading, error } = useQuery<Task[]>({
+  // Fetch all tasks (no due date filter, excluding completed)
+  const {
+    data: tasks = [],
+    isLoading,
+    error,
+  } = useQuery<Task[]>({
     queryKey: ["tasks", "Inbox"],
-    queryFn: () => getTasks("Inbox"),
+    queryFn: () => getTasks(undefined, undefined, undefined, false),
   });
-
-  // Mutation for deleting a task
-  const deleteMutation = useMutation({
-    mutationFn: deleteTask,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", "Inbox"] });
-      toast.success("Task deleted successfully!");
-    },
-    onError: (err: any) => {
-      toast.error(err.message || "Failed to delete task");
-    },
-  });
-
-  // Format due date with "Today" or "Tomorrow" if applicable
-  const formatDueDate = (dueDate: Date | null) => {
-    if (!dueDate) return "No due date";
-    const today = new Date(); // Current date: June 13, 2025, 03:42 PM IST
-    if (isToday(dueDate)) {
-      return `Today, ${format(dueDate, "HH:mm")} IST`;
-    }
-    if (isTomorrow(dueDate)) {
-      return `Tomorrow, ${format(dueDate, "HH:mm")} IST`;
-    }
-    return `${format(dueDate, "yyyy-MM-dd HH:mm")} IST`;
-  };
 
   // Default content when there are no tasks
   const defaultContent = (
     <div className="flex flex-col gap-2 px-6">
       <h2 className="text-2xl">Inbox</h2>
-      <h3>Capture now, plan later</h3>
-      <p>
-        Inbox is your go-to spot for quick task entry. Clear your mind now,
-        organize when you’re ready.
-      </p>
+      <h3>No tasks in inbox</h3>
+      <p>Add a task to get started!</p>
       <button
         onClick={onAddTask}
         className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
@@ -104,66 +82,14 @@ const InboxPage = ({ onAddTask, onEditTask }: InboxPageProps) => {
         <h2 className="text-2xl">Inbox</h2>
         <button
           onClick={onAddTask}
-          className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600  rounded-md text-sm px-4"
+          className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
         >
           Add Task
         </button>
       </div>
       <ul className="space-y-4">
         {tasks.map((task) => (
-          <li
-            key={task.id}
-            className="p-4 border border-emerald-300 rounded-lg shadow-sm"
-          >
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="text-lg font-semibold">{task.title}</h3>
-                {task.description && (
-                  <p className="text-sm">{task.description}</p>
-                )}
-                <p className="text-sm">
-                  Due: {formatDueDate(task.dueDate)}
-                </p>
-                <p className="text-sm">Project: {task.project}</p>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onEditTask(task)}
-                >
-                  Edit
-                </Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      disabled={deleteMutation.isPending}
-                    >
-                      {deleteMutation.isPending ? "Deleting..." : "Delete"}
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete the task "{task.title}".
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => deleteMutation.mutate(task.id)}
-                      >
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
-            </div>
-          </li>
+          <TaskComponent task={task} onEditTask={onEditTask} key={task.id} />
         ))}
       </ul>
     </div>
@@ -171,3 +97,147 @@ const InboxPage = ({ onAddTask, onEditTask }: InboxPageProps) => {
 };
 
 export default InboxPage;
+
+const TaskComponent = ({
+  task,
+  onEditTask,
+}: {
+  task: Task;
+  onEditTask: (task: Task) => void;
+}) => {
+  const [isOverdue, setIsOverdue] = useState(() => {
+    const dueDate = task.dueDate;
+    const currentTime = new Date();
+    if (!dueDate) return false;
+    return dueDate < currentTime;
+  });
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const dueDate = task.dueDate;
+      const currentTime = new Date();
+      if (!dueDate) return;
+      setIsOverdue(dueDate < currentTime);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [task.dueDate]);
+
+  // Format due time
+  const formatDueTime = (dueDate: Date | null) => {
+    if (!dueDate) return "No due time";
+    return `${format(dueDate, "HH:mm")} IST`;
+  };
+
+  // Mutation for deleting a task
+  const deleteMutation = useMutation({
+    mutationFn: deleteTask,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", "Today"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", "Inbox"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", "Completed"] });
+      toast.success("Task deleted successfully!");
+    },
+    onError: (err: any) => {
+      console.error("Mutation error:", err);
+      toast.error(err.message || "Failed to delete task");
+    },
+  });
+
+  // Mutation for completing a task
+  const completeMutation = useMutation({
+    mutationFn: (params: { taskId: number; title: string; description: string; dueDate: Date | undefined; project: string; completed: boolean }) =>
+      updateTask(params.taskId, params.title, params.description, params.dueDate, params.project, params.completed),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", "Today"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", "Inbox"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", "Completed"] });
+      toast.success("Task marked as completed!");
+    },
+    onError: (err: any) => {
+      console.error("Mutation error:", err);
+      toast.error(err.message || "Failed to complete task");
+    },
+  });
+
+  const [isCompleted, setIsCompleted] = useState(false);
+
+  const handleCompleteChange = (checked: boolean) => {
+    setIsCompleted(checked);
+    if (checked) {
+      const audio = new Audio("/simply-notify.mp3");
+      audio.play().catch((err) => console.error("Audio play failed:", err));
+      completeMutation.mutate({
+        taskId: task.id,
+        title: task.title,
+        description: task.description || "",
+        dueDate: task.dueDate,
+        project: task.project,
+        completed: true,
+      });
+    }
+  };
+
+  return (
+    <li
+      key={task.id}
+      className={`p-4 border rounded-lg shadow-sm ${
+        isOverdue ? "border-red-500" : "border-emerald-200"
+      }`}
+    >
+      <div className="flex justify-between items-start">
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id={`complete-${task.id}`}
+            checked={isCompleted}
+            onCheckedChange={handleCompleteChange}
+            disabled={completeMutation.isPending}
+          />
+          <div>
+            <h3 className="text-lg font-semibold">{task.title}</h3>
+            {task.description && <p className="text-sm">{task.description}</p>}
+            <p className="text-sm">
+              Due: {formatDueTime(task.dueDate)}
+              {isOverdue && <span className="text-red-500 ml-2">(Overdue)</span>}
+            </p>
+            <p className="text-sm">Project: {task.project}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => onEditTask(task)}>
+            Edit
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="destructive"
+                size="sm"
+                disabled={deleteMutation.isPending}
+              >
+                {deleteMutation.isPending ? "Deleting..." : "Delete"}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the
+                  task "{task.title}".
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => deleteMutation.mutate(task.id)}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </div>
+    </li>
+  );
+};

@@ -1,6 +1,7 @@
 "use server"
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers';
+import { authClient } from '../auth-client';
 
 export const signIn = async (email: string, password: string) => {
   try {
@@ -38,3 +39,19 @@ export const signOut = async () => {
     throw error instanceof Error ? error : new Error("Failed to sign out");
   }
 }
+
+export const sendVerify = async (email: string) => {
+  try {
+    const requestHeaders = await headers();
+    const headersObject = Object.fromEntries(requestHeaders);
+    // Assume BetterAuth has a resendVerificationEmail method or similar
+    await authClient.resendVerificationEmail({ 
+      body: { email }, 
+      headers: headersObject 
+    });
+    return { success: true, message: "Verification email sent successfully" };
+  } catch (error: any) {
+    console.error("Send verification error:", error);
+    throw new Error(error.message || "Failed to send verification email");
+  }
+};

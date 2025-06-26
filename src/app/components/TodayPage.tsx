@@ -189,7 +189,7 @@ const TaskComponent = ({
   const handleCompleteChange = (checked: boolean) => {
     setIsCompleted(checked);
     if (checked) {
-      const audio = new Audio("/simple-notify.mp3");
+      const audio = new Audio("/simply-notify.mp3");
       audio.play().catch((err) => console.error("Audio play failed:", err));
       completeMutation.mutate({
         taskId: task.id,

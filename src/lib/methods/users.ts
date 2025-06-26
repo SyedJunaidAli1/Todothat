@@ -45,9 +45,9 @@ export const sendVerify = async (email: string) => {
     const requestHeaders = await headers();
     const headersObject = Object.fromEntries(requestHeaders);
     // Assume BetterAuth has a resendVerificationEmail method or similar
-    await authClient.resendVerificationEmail({ 
-      body: { email }, 
-      headers: headersObject 
+    await authClient.resendVerificationEmail({
+      body: { email },
+      headers: headersObject
     });
     return { success: true, message: "Verification email sent successfully" };
   } catch (error: any) {

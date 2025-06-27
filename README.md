@@ -35,7 +35,7 @@
 - [x] learn about tanstack query
 - [x] drizzle default now with timezone
 - [] (new Date()).toISOString() 
-
+- [] change task project field from text to unique id
 
 #known issue
 

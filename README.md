@@ -35,7 +35,7 @@
 - [x] learn about tanstack query
 - [x] drizzle default now with timezone
 - [] (new Date()).toISOString() 
-- [] useEffect for 
+
 
 #known issue
 

@@ -9,6 +9,12 @@ import {
   Inbox,
   Search,
   Folder,
+  Calendar,
+  Smile,
+  Calculator,
+  User,
+  CreditCard,
+  Settings,
 } from "lucide-react";
 import ThemeToggle from "./components/ThemeToggle";
 import InboxPage from "./components/InboxPage";
@@ -28,6 +34,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@/components/ui/command";
+import { useSearchParams } from "next/navigation";
 
 export default function Home() {
   const [activeItem, setActiveItem] = useState("");
@@ -40,7 +57,12 @@ export default function Home() {
   const [project, setProject] = useState("Inbox");
   const [error, setError] = useState("");
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState(
+    searchParams.get("search") || ""
+  );
 
   useEffect(() => {
     if (isModalOpen) {
@@ -72,8 +94,12 @@ export default function Home() {
     if (itemText === "Add Task") {
       setEditingTask(null); // Clear editing state for new task
       setIsModalOpen(true);
+    } else if (itemText === "Search") {
+      setActiveItem(itemText);
+      setIsSearchOpen(true); // Open search modal
     } else {
       setActiveItem(itemText);
+      setIsSearchOpen(false); // Close search modal when switching
     }
   };
 
@@ -102,11 +128,16 @@ export default function Home() {
       }
 
       if (editingTask) {
-        // Update existing task
-        await updateTask(editingTask.id, title, description, dueDateValue, project, editingTask.completed);
+        await updateTask(
+          editingTask.id,
+          title,
+          description,
+          dueDateValue,
+          project,
+          editingTask.completed
+        );
         toast.success("Task updated successfully!");
       } else {
-        // Create new task
         await createTask(title, description, dueDateValue, project);
         toast.success("Task created successfully!");
       }
@@ -118,7 +149,6 @@ export default function Home() {
       setDueTime("");
       setProject("Inbox");
       setEditingTask(null);
-      // Invalidate queries to refetch tasks
       queryClient.invalidateQueries({ queryKey: ["tasks", project] });
     } catch (err: any) {
       setError(err.message || "Failed to save task");
@@ -137,14 +167,38 @@ export default function Home() {
     setEditingTask(null);
   };
 
+  const handleSearchSelect = (value: string) => {
+    setSearchTerm(value);
+    const params = new URLSearchParams(searchParams);
+    if (value) params.set("search", value);
+    else params.delete("search");
+    window.history.pushState({}, "", `/?${params.toString()}`);
+    setIsSearchOpen(false); // Close after selection
+  };
+
   const renderContent = () => {
     switch (activeItem) {
       case "Inbox":
-        return <InboxPage onAddTask={() => handleItemSelect("Add Task")} onEditTask={handleEditTask} />;
+        return (
+          <InboxPage
+            onAddTask={() => handleItemSelect("Add Task")}
+            onEditTask={handleEditTask}
+          />
+        );
       case "Today":
-        return <TodayPage onAddTask={() => handleItemSelect("Add Task")} onEditTask={handleEditTask} />;
+        return (
+          <TodayPage
+            onAddTask={() => handleItemSelect("Add Task")}
+            onEditTask={handleEditTask}
+          />
+        );
       case "Upcoming":
-        return <UpcomingPage onAddTask={() => handleItemSelect("Add Task")} onEditTask={handleEditTask} />;
+        return (
+          <UpcomingPage
+            onAddTask={() => handleItemSelect("Add Task")}
+            onEditTask={handleEditTask}
+          />
+        );
       case "Completed":
         return <CompletedPage onEditTask={handleEditTask} />;
       default:
@@ -223,10 +277,7 @@ export default function Home() {
         </header>
         <main className="p-6">{renderContent()}</main>
       </div>
-      <Dialog
-        open={isModalOpen}
-        onOpenChange={(open) => !open && handleClose()}
-      >
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogTrigger asChild>
           <span className="hidden">Add Task</span>
         </DialogTrigger>
@@ -274,10 +325,65 @@ export default function Home() {
               className="w-full"
             />
             {error && <p className="text-red-500 text-sm">{error}</p>}
-            <Button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-600 text-white">
+            <Button
+              type="submit"
+              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white"
+            >
               {editingTask ? "Update Task" : "Add Task"}
             </Button>
           </form>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
+        <DialogTrigger asChild>
+          <span className="hidden"></span>
+        </DialogTrigger>
+        <DialogContent className="border-2 w-full max-w-md rounded-lg shadow-lg p-2">
+          <DialogTitle className="text-xl text-center text-emerald-500 font-bold px-6 py-1">
+            Search Tasks
+          </DialogTitle>
+          <Command className="w-full">
+            <CommandInput
+              placeholder="Type a command or search..."
+              value={searchTerm}
+              onValueChange={handleSearchSelect}
+            />
+            <CommandList>
+              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandGroup heading="Suggestions">
+                <CommandItem>
+                  <Calendar />
+                  <span>Calendar</span>
+                </CommandItem>
+                <CommandItem>
+                  <Smile />
+                  <span>Search Emoji</span>
+                </CommandItem>
+                <CommandItem disabled>
+                  <Calculator />
+                  <span>Calculator</span>
+                </CommandItem>
+              </CommandGroup>
+              <CommandSeparator />
+              <CommandGroup heading="Settings">
+                <CommandItem>
+                  <User />
+                  <span>Profile</span>
+                  <CommandShortcut>⌘P</CommandShortcut>
+                </CommandItem>
+                <CommandItem>
+                  <CreditCard />
+                  <span>Billing</span>
+                  <CommandShortcut>⌘B</CommandShortcut>
+                </CommandItem>
+                <CommandItem>
+                  <Settings />
+                  <span>Settings</span>
+                  <CommandShortcut>⌘S</CommandShortcut>
+                </CommandItem>
+              </CommandGroup>
+            </CommandList>
+          </Command>
         </DialogContent>
       </Dialog>
     </div>

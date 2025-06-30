@@ -6,15 +6,9 @@ import {
   CalendarFold,
   CirclePlus,
   ClipboardCheck,
-  Inbox,
+  InboxIcon,
   Search,
   Folder,
-  Calendar,
-  Smile,
-  Calculator,
-  User,
-  CreditCard,
-  Settings,
 } from "lucide-react";
 import ThemeToggle from "./components/ThemeToggle";
 import InboxPage from "./components/InboxPage";
@@ -42,9 +36,9 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command";
 import { useSearchParams } from "next/navigation";
+import { getAllTasks, TaskWithSection } from "@/lib/utils/search";
 
 export default function Home() {
   const [activeItem, setActiveItem] = useState("");
@@ -90,6 +84,17 @@ export default function Home() {
     }
   }, [editingTask]);
 
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev); // Toggle search modal
+      }
+    };
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, []); // Empty dependency array to run once on mount
+
   const handleItemSelect = (itemText: string) => {
     if (itemText === "Add Task") {
       setEditingTask(null); // Clear editing state for new task
@@ -129,7 +134,7 @@ export default function Home() {
 
       if (editingTask) {
         await updateTask(
-          editingTask.id,
+          editingTask.id as number, // Cast to number since Task.id is number
           title,
           description,
           dueDateValue,
@@ -156,24 +161,23 @@ export default function Home() {
     }
   };
 
-  const handleClose = () => {
-    setIsModalOpen(false);
-    setTitle("");
-    setDescription("");
-    setDueDate("");
-    setDueTime("");
-    setProject("Inbox");
-    setError("");
-    setEditingTask(null);
-  };
-
   const handleSearchSelect = (value: string) => {
     setSearchTerm(value);
     const params = new URLSearchParams(searchParams);
     if (value) params.set("search", value);
     else params.delete("search");
     window.history.pushState({}, "", `/?${params.toString()}`);
-    setIsSearchOpen(false); // Close after selection
+    // Only close if a specific item is selected (handled by CommandItem onSelect)
+  };
+
+  const handleCommandSelect = (value: string) => {
+    handleSearchSelect(value);
+    if (value === "add-task") {
+      setIsModalOpen(true); // Open Add Task modal
+    } else if (["inbox", "today", "upcoming", "completed"].includes(value)) {
+      setActiveItem(value.charAt(0).toUpperCase() + value.slice(1)); // Navigate to section
+    }
+    setIsSearchOpen(false); // Close search modal
   };
 
   const renderContent = () => {
@@ -181,6 +185,7 @@ export default function Home() {
       case "Inbox":
         return (
           <InboxPage
+            searchTerm={searchTerm}
             onAddTask={() => handleItemSelect("Add Task")}
             onEditTask={handleEditTask}
           />
@@ -188,6 +193,7 @@ export default function Home() {
       case "Today":
         return (
           <TodayPage
+            searchTerm={searchTerm}
             onAddTask={() => handleItemSelect("Add Task")}
             onEditTask={handleEditTask}
           />
@@ -195,12 +201,15 @@ export default function Home() {
       case "Upcoming":
         return (
           <UpcomingPage
+            searchTerm={searchTerm}
             onAddTask={() => handleItemSelect("Add Task")}
             onEditTask={handleEditTask}
           />
         );
       case "Completed":
-        return <CompletedPage onEditTask={handleEditTask} />;
+        return (
+          <CompletedPage searchTerm={searchTerm} onEditTask={handleEditTask} />
+        );
       default:
         return (
           <div className="p-4">
@@ -226,7 +235,7 @@ export default function Home() {
           active={activeItem === "Search"}
         />
         <SidebarItem
-          icon={<Inbox />}
+          icon={<InboxIcon />}
           text="Inbox"
           alert
           active={activeItem === "Inbox"}
@@ -350,37 +359,52 @@ export default function Home() {
             />
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
-              <CommandGroup heading="Suggestions">
-                <CommandItem>
-                  <Calendar />
-                  <span>Calendar</span>
+              <CommandGroup heading="Navigation">
+                <CommandItem onSelect={() => handleCommandSelect("inbox")}>
+                  <InboxIcon />
+                  <span>Go to Inbox</span>
                 </CommandItem>
-                <CommandItem>
-                  <Smile />
-                  <span>Search Emoji</span>
+                <CommandItem onSelect={() => handleCommandSelect("today")}>
+                  <CalendarFold />
+                  <span>Go to Today</span>
                 </CommandItem>
-                <CommandItem disabled>
-                  <Calculator />
-                  <span>Calculator</span>
+                <CommandItem onSelect={() => handleCommandSelect("upcoming")}>
+                  <CalendarDays />
+                  <span>Go to Upcoming</span>
+                </CommandItem>
+                <CommandItem onSelect={() => handleCommandSelect("completed")}>
+                  <ClipboardCheck />
+                  <span>Go to Completed</span>
                 </CommandItem>
               </CommandGroup>
               <CommandSeparator />
-              <CommandGroup heading="Settings">
-                <CommandItem>
-                  <User />
-                  <span>Profile</span>
-                  <CommandShortcut>⌘P</CommandShortcut>
+              <CommandGroup heading="Actions">
+                <CommandItem onSelect={() => handleCommandSelect("add-task")}>
+                  <CirclePlus />
+                  <span>Add Task</span>
                 </CommandItem>
-                <CommandItem>
-                  <CreditCard />
-                  <span>Billing</span>
-                  <CommandShortcut>⌘B</CommandShortcut>
-                </CommandItem>
-                <CommandItem>
-                  <Settings />
-                  <span>Settings</span>
-                  <CommandShortcut>⌘S</CommandShortcut>
-                </CommandItem>
+              </CommandGroup>
+              <CommandSeparator />
+              <CommandGroup heading="Tasks">
+                {getAllTasks(queryClient, project)
+                  .filter((task) =>
+                    task.title.toLowerCase().includes(searchTerm.toLowerCase())
+                  )
+                  .map((task) => (
+                    <CommandItem
+                      key={task.id}
+                      onSelect={() => {
+                        handleSearchSelect(task.title);
+                        setActiveItem(task.section);
+                      }}
+                    >
+                      {task.section === "Inbox" && <InboxIcon />}
+                      {task.section === "Today" && <CalendarFold />}
+                      {task.section === "Upcoming" && <CalendarDays />}
+                      {task.section === "Completed" && <ClipboardCheck />}
+                      <span>{task.title}</span>
+                    </CommandItem>
+                  ))}
               </CommandGroup>
             </CommandList>
           </Command>

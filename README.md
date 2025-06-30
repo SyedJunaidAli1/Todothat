@@ -27,7 +27,8 @@
 - [x] inbpx page complete task shouldnt be there
 - [x] Upcoming Page Reminder update automatically
 - [x] Completed Page
-- [] Search Bar for Search btn
+- [x] Search Bar for Search btn
+- [] Search Bar loading thing i have to load tasks by click on tabs
 - [] My Projects with Dynamic Project
 - [] Todo save with or without Timezone
 - [] Todo set timer for notify

@@ -50,7 +50,6 @@ export const verification = pgTable("verification", {
   updatedAt: timestamp("updated_at"),
 });
 
-
 export const tasks = pgTable("tasks", {
   id: serial("id").primaryKey(),
   userId: text("user_id").notNull().references(() => user.id),
@@ -58,7 +57,7 @@ export const tasks = pgTable("tasks", {
   description: text("description"),
   dueDate: timestamp("due_date", { withTimezone: true }),
   project: text("project").default("Inbox"),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   completed: boolean("completed").default(false).notNull(), // New
 })
 

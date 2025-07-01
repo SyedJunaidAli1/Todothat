@@ -1,5 +1,4 @@
 #TODO
-
 - [x] Make sidebar with all the features
 - [x] make theme toggle button
 - [x] make Profile in footer of the sidebar
@@ -35,7 +34,7 @@
 - [] Todo notify by email
 - [x] learn about tanstack query
 - [x] drizzle default now with timezone
-- [] (new Date()).toISOString() 
+- [x] Store timezone tasks (new Date()).toISOString() 
 - [] change task project field from text to unique id
 
 #known issue

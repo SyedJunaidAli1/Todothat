@@ -13,7 +13,7 @@
 - [x] Forgotpass and reset pass
 - [x] Avatar for PFP
 - [x] Email verification for new Accounts
-- [] Email verification for mauall trigger Wip and testing
+- [x] Email verification for manual trigger Wip and testing
 - [x] Profile DropDown menu aka three dots
 - [x] Top Loader nextjs
 - [x] Modal for Todo Task

@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth'
 import { headers } from 'next/headers';
 import { authClient } from '../auth-client';
 
+
 export const signIn = async (email: string, password: string) => {
   try {
     const res = await auth.api.signInEmail({
@@ -42,12 +43,9 @@ export const signOut = async () => {
 
 export const sendVerify = async (email: string) => {
   try {
-    const requestHeaders = await headers();
-    const headersObject = Object.fromEntries(requestHeaders);
-    // Assume BetterAuth has a resendVerificationEmail method or similar
-    await authClient.resendVerificationEmail({
-      body: { email },
-      headers: headersObject
+    await authClient.sendVerificationEmail({
+      email: email,
+      callbackURL: "/", // The redirect URL after verification
     });
     return { success: true, message: "Verification email sent successfully" };
   } catch (error: any) {

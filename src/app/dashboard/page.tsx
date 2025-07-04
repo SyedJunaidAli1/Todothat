@@ -1,11 +1,11 @@
 import React from 'react'
+import { Loading } from '../components/Loading'
 
-const page = () => {
-  return (
-    <div>
-      <h1>Dashboard</h1>
-    </div>
-  )
-}
+const page = () => (
+  <div>
+    <h1>Dashboard</h1>
+    <Loading />
+  </div>
+)
 
 export default page

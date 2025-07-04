@@ -1,7 +1,7 @@
 "use client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getTasks, Task, deleteTask, updateTask } from "@/lib/methods/tasks";
-import { format } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz"; // Switch to date-fns-tz
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -27,7 +27,7 @@ const TodayPage = ({ onAddTask, onEditTask }: TodayPageProps) => {
   const queryClient = useQueryClient();
 
   // State to track the current time, updated every minute
-  const [currentTime, setCurrentTime] = useState(new Date()); // June 23, 2025, 05:13 PM IST
+  const [currentTime, setCurrentTime] = useState(new Date()); // Current date: July 04, 2025, 03:34 PM IST
 
   // Update currentTime every minute
   useEffect(() => {
@@ -40,7 +40,7 @@ const TodayPage = ({ onAddTask, onEditTask }: TodayPageProps) => {
   }, []);
 
   // Fetch tasks due today using TanStack Query, excluding completed tasks
-  const today = new Date(); // June 23, 2025, 05:13 PM IST
+  const today = new Date(); // July 04, 2025, 03:34 PM IST
   const {
     data: tasks = [],
     isLoading,
@@ -138,10 +138,19 @@ const TaskComponent = ({
     return () => clearInterval(interval);
   }, [task.dueDate]);
 
-  // Format due time (since all tasks are for today)
+  // Format due time with user's local timezone, including month and year, no day
   const formatDueTime = (dueDate: Date | null) => {
     if (!dueDate) return "No due time";
-    return `${format(dueDate, "HH:mm")} IST`;
+    try {
+      // Convert UTC to user's local timezone
+      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const zonedDate = toZonedTime(dueDate, userTimezone);
+      // Format with month, year, and time, excluding day (e.g., "Jul 2025 15:34")
+      return format(zonedDate, "HH:mm") + " (" + userTimezone + ")";
+    } catch (e) {
+      console.error("Timezone conversion error:", e);
+      return format(dueDate, "HH:mm") + " (UTC)"; // Fallback to UTC
+    }
   };
 
   // Mutation for deleting a task

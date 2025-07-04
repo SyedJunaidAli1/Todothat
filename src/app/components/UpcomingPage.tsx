@@ -1,7 +1,7 @@
 "use client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getTasks, Task, updateTask, deleteTask } from "@/lib/methods/tasks";
-import { format } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz"; // Switch to date-fns-tz
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -27,7 +27,7 @@ const UpcomingPage = ({ onAddTask, onEditTask }: UpcomingPageProps) => {
   const queryClient = useQueryClient();
 
   // Fetch tasks with future due dates (excluding completed)
-  const today = new Date(); // June 26, 2025, 05:00 PM IST
+  const today = new Date(); // July 04, 2025, 03:38 PM IST
   const {
     data: tasks = [],
     isLoading,
@@ -125,20 +125,26 @@ const TaskComponent = ({
     return () => clearInterval(interval);
   }, [task.dueDate]);
 
-  // Format due time
+  // Format due time and date with user's local timezone, including day
   const formatDueTime = (dueDate: Date | null) => {
     if (!dueDate) return "No due time";
-    return `${format(dueDate, "HH:mm")} IST`;
+    try {
+      // Convert UTC to user's local timezone
+      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const zonedDate = toZonedTime(dueDate, userTimezone);
+      // Format with day, month, year, and time (e.g., "dd MMM yyyy HH:mm")
+      return format(zonedDate, "dd MMM yyyy HH:mm") + " (" + userTimezone + ")";
+    } catch (e) {
+      console.error("Timezone conversion error:", e);
+      return format(dueDate, "dd MMM yyyy HH:mm") + " (UTC)"; // Fallback to UTC
+    }
   };
 
   // Mutation for deleting a task
   const deleteMutation = useMutation({
     mutationFn: deleteTask,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", "Today"] });
-      queryClient.invalidateQueries({ queryKey: ["tasks", "Inbox"] });
       queryClient.invalidateQueries({ queryKey: ["tasks", "Upcoming"] });
-      queryClient.invalidateQueries({ queryKey: ["tasks", "Completed"] });
       toast.success("Task deleted successfully!");
     },
     onError: (err: any) => {

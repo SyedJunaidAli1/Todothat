@@ -38,7 +38,7 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { useSearchParams } from "next/navigation";
-import { getAllTasks, TaskWithSection } from "@/lib/utils/search";
+import { getAllTasks } from "@/lib/utils/search";
 
 export default function Home() {
   const [activeItem, setActiveItem] = useState("");

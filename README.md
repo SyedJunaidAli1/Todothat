@@ -30,6 +30,7 @@
 - [] Search Bar loading thing i have to load tasks by click on tabs
 - [] My Projects with Dynamic Project
 - [x] Todo save with timezone
+- [x] display time in localtime zone of the user
 - [] Todo set timer for notify
 - [] Todo notify by email
 - [x] learn about tanstack query

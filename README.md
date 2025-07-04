@@ -29,13 +29,14 @@
 - [x] Search Bar for Search btn
 - [] Search Bar loading thing i have to load tasks by click on tabs
 - [] My Projects with Dynamic Project
-- [] Todo save with or without Timezone
+- [x] Todo save with timezone
 - [] Todo set timer for notify
 - [] Todo notify by email
 - [x] learn about tanstack query
 - [x] drizzle default now with timezone
 - [x] Store timezone tasks (new Date()).toISOString() 
 - [] change task project field from text to unique id
+- [] Google authentication
 
 #known issue
 

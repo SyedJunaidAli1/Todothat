@@ -29,7 +29,7 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { useSearchParams } from "next/navigation";
-import TaskModal from "./components/TaskModal"; // Import the new TaskModal component
+import TaskModal from "./components/TaskModal";
 import {
   Dialog,
   DialogContent,
@@ -251,13 +251,13 @@ export default function Home() {
           icon={<Folder />}
           text="My Projects"
           active={activeItem === "My Projects"}
+          prefixIcon={
+            <CirclePlus
+              className="w-4 h-4 cursor-pointer"
+              onClick={() => handleItemSelect("Add Project")}
+            />
+          }
         >
-          <SidebarItem
-            icon={<CirclePlus className="w-4 h-4" />}
-            text="Add Project"
-            active={activeItem === "Add Project"}
-            onSelect={handleItemSelect}
-          />
           {projects.map((project) => (
             <SidebarItem
               key={project.id}

@@ -31,6 +31,7 @@
 - [x] Todo save with timezone
 - [x] display time in localtime zone of the user
 - [] Todo set timer for notify
+- [] set knock for notifications
 - [] Todo notify by email
 - [x] learn about tanstack query
 - [x] drizzle default now with timezone

@@ -32,7 +32,6 @@ const Profile = ({ expanded }: { expanded: boolean }) => {
     try {
       await sendVerify(email); // Call BetterAuth API to send verification email
       console.log(email);
-
       toast.success("Verification email sent! Please check your inbox.");
     } catch (error) {
       toast.error("Failed to send verification email. Please try again.");

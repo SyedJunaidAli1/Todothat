@@ -11,7 +11,7 @@ export const user = pgTable("user", {
   updatedAt: timestamp("updated_at").notNull(),
 });
 
-// Session table
+// Session tablea
 export const session = pgTable("session", {
   id: text("id").primaryKey(),
   expiresAt: timestamp("expires_at").notNull(),
@@ -61,12 +61,20 @@ export const tasks = pgTable("tasks", {
   completed: boolean("completed").default(false).notNull(), // New
 })
 
+export const projects = pgTable("projects", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
 export const schema = {
   user,
   session,
   account,
   verification,
   tasks,
+  projects
 };
 
 

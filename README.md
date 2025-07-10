@@ -27,7 +27,9 @@
 - [x] Upcoming Page Reminder update automatically
 - [x] Completed Page
 - [x] Search Bar for Search btn
-- [] My Projects with Dynamic Project
+- [x] My Projects with Dynamic Project
+- [] My Projects with Dynamic Project add delete btn for them
+- [] My Projects with Dynamic Project filter tasks accordingly
 - [x] Todo save with timezone
 - [x] display time in localtime zone of the user
 - [] Todo set timer for notify

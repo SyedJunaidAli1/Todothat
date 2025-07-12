@@ -52,14 +52,15 @@ export const verification = pgTable("verification", {
 
 export const tasks = pgTable("tasks", {
   id: serial("id").primaryKey(),
-  userId: text("user_id").notNull().references(() => user.id),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   description: text("description"),
   dueDate: timestamp("due_date", { withTimezone: true }),
-  project: text("project").default("Inbox"),
+  projectId: text("project_id").references(() => projects.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  completed: boolean("completed").default(false).notNull(), // New
-})
+  completed: boolean("completed").default(false).notNull(),
+});
+
 
 export const projects = pgTable("projects", {
   id: text("id").primaryKey(),

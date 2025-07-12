@@ -405,6 +405,7 @@ import {
   InboxIcon,
   Search,
   Folder,
+  Trash,
 } from "lucide-react";
 import ThemeToggle from "./components/ThemeToggle";
 import InboxPage from "./components/InboxPage";
@@ -434,7 +435,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { createProject, getProjects } from "@/lib/methods/projects";
+import { createProject, deleteProjects, getProjects } from "@/lib/methods/projects";
 
 interface Project {
   id: string;
@@ -544,6 +545,22 @@ export default function Home() {
       setActiveItem(value.charAt(0).toUpperCase() + value.slice(1));
     }
     setIsSearchOpen(false);
+  };
+
+  const handleDeleteProject = async (e: React.MouseEvent, id: string) => {
+    try {
+      await deleteProjects(id);
+      setProjects((prev) => prev.filter((project) => project.id !== id));
+      toast.success("Project deleted successfully");
+      if (
+        activeItem &&
+        projects.find((p) => p.id === id)?.name === activeItem
+      ) {
+        setActiveItem("Inbox");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete project");
+    }
   };
 
   const renderContent = () => {
@@ -673,9 +690,21 @@ export default function Home() {
             <SidebarItem
               key={project.id}
               icon={<Folder className="w-4 h-4" />}
-              text={project.name}
+              text={
+                <div className="flex justify-between items-center w-full">
+                  <span
+                    onClick={() => handleItemSelect(project.name)}
+                    className="flex-1 truncate cursor-pointer"
+                  >
+                    {project.name}
+                  </span>
+                  <Trash
+                    className="w-4 h-4 ml-2 text-red-500 hover:text-red-700 cursor-pointer"
+                    onClick={(e) => handleDeleteProject(e, project.id)}
+                  />
+                </div>
+              }
               active={activeItem === project.name}
-              onSelect={handleItemSelect}
             />
           ))}
         </SidebarItem>

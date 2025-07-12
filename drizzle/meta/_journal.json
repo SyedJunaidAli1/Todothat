@@ -43,6 +43,13 @@
       "when": 1749631469830,
       "tag": "0005_condemned_wind_dancer",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1752307251502,
+      "tag": "0006_stiff_stepford_cuckoos",
+      "breakpoints": true
     }
   ]
 }

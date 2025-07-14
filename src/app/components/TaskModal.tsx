@@ -27,8 +27,9 @@ interface TaskModalProps {
     title: string;
     description: string;
     dueDate?: Date;
-    project: string;
+    projectId: string | null;
   }) => Promise<void>;
+  projects: { id: string; name: string }[]; // Add this line
 }
 
 export default function TaskModal({
@@ -36,19 +37,20 @@ export default function TaskModal({
   onOpenChange,
   editingTask,
   onSubmit,
+  projects,
 }: TaskModalProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [dueTime, setDueTime] = useState("");
-  const [project, setProject] = useState("Inbox");
   const [error, setError] = useState("");
+  const [projectId, setProjectId] = useState<string | null>(null);
 
   useEffect(() => {
     if (editingTask) {
       setTitle(editingTask.title);
       setDescription(editingTask.description || "");
-      setProject(editingTask.project);
+      setProjectId(editingTask.project || null);
       if (editingTask.dueDate) {
         const due = new Date(editingTask.dueDate);
         setDueDate(due.toISOString().split("T")[0]);
@@ -64,8 +66,8 @@ export default function TaskModal({
       setDescription("");
       setDueDate("");
       setDueTime("");
-      setProject("Inbox");
       setError("");
+      setProjectId(null);
     }
   }, [editingTask]);
 
@@ -88,7 +90,7 @@ export default function TaskModal({
         }
       }
 
-      await onSubmit({ title, description, dueDate: dueDateValue, project });
+      await onSubmit({ title, description, dueDate: dueDateValue, projectId });
 
       onOpenChange(false);
     } catch (err: any) {
@@ -142,15 +144,31 @@ export default function TaskModal({
               aria-label="Due time"
             />
           </div>
-          <Input
-            type="text"
-            value={project}
-            onChange={(e) => setProject(e.target.value)}
-            placeholder="Project (e.g., Inbox)"
-            className="w-full"
-            aria-label="Project name"
-          />
-          {error && <p className="text-red-500 text-sm" role="alert">{error}</p>}
+          <div>
+            <label
+              htmlFor="project"
+              className="text-sm font-medium text-gray-700"
+            >
+              Project
+            </label>
+            <select
+              value={projectId ?? ""}
+              onChange={(e) => setProjectId(e.target.value || null)}
+              className="w-full mt-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              <option value="">Inbox</option>
+              {projects.map((proj) => (
+                <option key={proj.id} value={proj.id}>
+                  {proj.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          {error && (
+            <p className="text-red-500 text-sm" role="alert">
+              {error}
+            </p>
+          )}
           <Button
             type="submit"
             className="w-full bg-emerald-500 hover:bg-emerald-600 text-white"

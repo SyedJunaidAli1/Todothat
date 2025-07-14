@@ -11,7 +11,7 @@ export interface Task {
   title: string;
   description: string | null;
   dueDate: Date | null;
-  project: string;
+  projectId: string | null;
   userId: string;
   createdAt: Date;
   completed: boolean;
@@ -36,7 +36,7 @@ export async function getTasks(
     .where(
       and(
         eq(tasks.userId, session.user.id),
-        project ? eq(tasks.project, project) : sql`TRUE`,
+        project ? eq(tasks.projectId, project) : sql`TRUE`,
         completed !== undefined ? eq(tasks.completed, completed) : sql`TRUE`
       )
     );
@@ -50,7 +50,7 @@ export async function getTasks(
     query = query.where(
       and(
         eq(tasks.userId, session.user.id),
-        project ? eq(tasks.project, project) : sql`TRUE`,
+        project ? eq(tasks.projectId, project) : sql`TRUE`,
         completed !== undefined ? eq(tasks.completed, completed) : sql`TRUE`,
         sql`${tasks.dueDate} >= ${startOfDay.toISOString()}`,
         sql`${tasks.dueDate} <= ${endOfDay.toISOString()}`
@@ -80,7 +80,7 @@ export async function createTask(
   title: string,
   description: string,
   dueDate: Date | undefined,
-  project: string
+  projectId: string | null
 ) {
   const requestHeaders = await headers();
   const session = await auth.api.getSession({ headers: requestHeaders });
@@ -93,7 +93,7 @@ export async function createTask(
     title,
     description,
     dueDate,
-    project,
+    projectId,
     userId: session.user.id,
     completed: false, // Explicitly set to false
   });
@@ -104,7 +104,7 @@ export async function updateTask(
   title: string,
   description: string,
   dueDate: Date | undefined,
-  project: string,
+  projectId: string | null,
   completed: boolean
 ) {
   const requestHeaders = await headers();
@@ -120,7 +120,7 @@ export async function updateTask(
       title,
       description,
       dueDate,
-      project,
+      projectId,
       completed,
       updatedAt: new Date(),
     })

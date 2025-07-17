@@ -44,6 +44,7 @@ import {
   deleteProjects,
   getProjects,
 } from "@/lib/methods/projects";
+import Link from "next/link";
 
 interface Project {
   id: string;
@@ -300,12 +301,13 @@ export default function Home() {
               icon={<Folder className="w-4 h-4" />}
               text={
                 <div className="flex justify-between items-center w-full">
-                  <span
+                  <Link
+                    href={`/Projects/${project.id}`}
+                    className="flex-1 truncate cursor-pointer hover:underline"
                     onClick={() => handleItemSelect(project.name)}
-                    className="flex-1 truncate cursor-pointer"
                   >
                     {project.name}
-                  </span>
+                  </Link>
                   <Trash
                     className="w-4 h-4 ml-2 text-red-500 hover:text-red-700 cursor-pointer"
                     onClick={(e) => handleDeleteProject(e, project.id)}

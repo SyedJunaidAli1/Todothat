@@ -29,7 +29,8 @@
 - [x] Search Bar for Search btn
 - [x] My Projects with Dynamic Project
 - [x] My Projects with Dynamic Project add delete btn for them
-- [] My Projects with Dynamic Project filter tasks accordingly
+- [x] My Projects with Dynamic Project filter tasks accordingly
+- [] My Projects with Tasks render them on right panel
 - [x] Todo save with timezone
 - [x] display time in localtime zone of the user
 - [] Todo set timer for notify
@@ -40,7 +41,7 @@
 - [x] Store timezone tasks (new Date()).toISOString() 
 - [] change task project field from text to unique id
 - [] Google authentication
-- [] rdbms relations sql drizzle
+- [x] rdbms relations sql drizzle
 #known issue
 
 - [x] ApiError Failed to create use

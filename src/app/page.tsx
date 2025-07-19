@@ -12,10 +12,10 @@ import {
   Trash,
 } from "lucide-react";
 import ThemeToggle from "./components/ThemeToggle";
-import InboxPage from "./components/InboxPage";
-import CompletedPage from "./components/CompletedPage";
-import UpcomingPage from "./components/UpcomingPage";
-import TodayPage from "./components/TodayPage";
+import Inbox from "./Inbox/page";
+import Completed from "./Completed/page";
+import Upcoming from "./Upcoming/page";
+import Today from "./Today/page";
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { createTask, updateTask, Task, getTasks } from "@/lib/methods/tasks";
@@ -176,7 +176,7 @@ export default function Home() {
     switch (activeItem) {
       case "Inbox":
         return (
-          <InboxPage
+          <Inbox
             searchTerm={searchTerm}
             onAddTask={() => handleItemSelect("Add Task")}
             onEditTask={handleEditTask}
@@ -184,7 +184,7 @@ export default function Home() {
         );
       case "Today":
         return (
-          <TodayPage
+          <Today
             searchTerm={searchTerm}
             onAddTask={() => handleItemSelect("Add Task")}
             onEditTask={handleEditTask}
@@ -192,7 +192,7 @@ export default function Home() {
         );
       case "Upcoming":
         return (
-          <UpcomingPage
+          <Upcoming
             searchTerm={searchTerm}
             onAddTask={() => handleItemSelect("Add Task")}
             onEditTask={handleEditTask}
@@ -200,7 +200,7 @@ export default function Home() {
         );
       case "Completed":
         return (
-          <CompletedPage
+          <Completed
             searchTerm={searchTerm}
             onAddTask={() => handleItemSelect("Add Task")}
             onEditTask={handleEditTask}

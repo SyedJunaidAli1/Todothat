@@ -1,7 +1,7 @@
 "use client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getTasks, Task, deleteTask, updateTask } from "@/lib/methods/tasks";
-import { format, toZonedTime } from "date-fns-tz"; // Switch to date-fns-tz
+import { getTasks, Task, updateTask, deleteTask } from "@/lib/methods/tasks";
+import { format, toZonedTime } from "date-fns-tz";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -18,44 +18,30 @@ import {
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 
-interface TodayPageProps {
+interface InboxPageProps {
   onAddTask: () => void;
   onEditTask: (task: Task) => void;
 }
 
-const TodayPage = ({ onAddTask, onEditTask }: TodayPageProps) => {
+const Page = ({ onAddTask, onEditTask }: InboxPageProps) => {
   const queryClient = useQueryClient();
 
-  // State to track the current time, updated every minute
-  const [currentTime, setCurrentTime] = useState(new Date()); // Current date: July 04, 2025, 03:34 PM IST
-
-  // Update currentTime every minute
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 60 * 1000); // Update every minute
-
-    // Clean up the interval on component unmount
-    return () => clearInterval(interval);
-  }, []);
-
-  // Fetch tasks due today using TanStack Query, excluding completed tasks
-  const today = new Date(); // July 04, 2025, 03:34 PM IST
+  // Fetch all tasks (no due date filter, excluding completed)
   const {
     data: tasks = [],
     isLoading,
     error,
   } = useQuery<Task[]>({
-    queryKey: ["tasks", "Today", today.toISOString().split("T")[0]],
-    queryFn: () => getTasks(undefined, today, undefined, false), // Fetch only incomplete tasks due today
+    queryKey: ["tasks", "Inbox"],
+    queryFn: () => getTasks(undefined, undefined, undefined, false),
   });
 
-  // Default content when there are no tasks for today
+  // Default content when there are no tasks
   const defaultContent = (
     <div className="flex flex-col gap-2 px-6">
-      <h2 className="text-2xl">Today</h2>
-      <h3>No tasks for today</h3>
-      <p>Add a task to get started with your day!</p>
+      <h2 className="text-2xl">Inbox</h2>
+      <h3>No tasks in inbox</h3>
+      <p>Add a task to get started!</p>
       <button
         onClick={onAddTask}
         className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
@@ -69,7 +55,7 @@ const TodayPage = ({ onAddTask, onEditTask }: TodayPageProps) => {
   if (isLoading) {
     return (
       <div className="flex flex-col gap-2 px-6">
-        <h2 className="text-2xl">Today</h2>
+        <h2 className="text-2xl">Inbox</h2>
         <p>Loading tasks...</p>
       </div>
     );
@@ -78,13 +64,13 @@ const TodayPage = ({ onAddTask, onEditTask }: TodayPageProps) => {
   if (error) {
     return (
       <div className="flex flex-col gap-2 px-6">
-        <h2 className="text-2xl">Today</h2>
+        <h2 className="text-2xl">Inbox</h2>
         <p className="text-red-500">Failed to load tasks: {error.message}</p>
       </div>
     );
   }
 
-  // If there are no tasks for today, show the default content
+  // If there are no tasks, show the default content
   if (tasks.length === 0) {
     return defaultContent;
   }
@@ -93,7 +79,7 @@ const TodayPage = ({ onAddTask, onEditTask }: TodayPageProps) => {
   return (
     <div className="flex flex-col gap-4 px-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl">Today</h2>
+        <h2 className="text-2xl">Inbox</h2>
         <button
           onClick={onAddTask}
           className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
@@ -110,7 +96,7 @@ const TodayPage = ({ onAddTask, onEditTask }: TodayPageProps) => {
   );
 };
 
-export default TodayPage;
+export default Page;
 
 const TaskComponent = ({
   task,
@@ -138,18 +124,18 @@ const TaskComponent = ({
     return () => clearInterval(interval);
   }, [task.dueDate]);
 
-  // Format due time with user's local timezone, including month and year, no day
+  // Format due time and date with user's local timezone
   const formatDueTime = (dueDate: Date | null) => {
     if (!dueDate) return "No due time";
     try {
       // Convert UTC to user's local timezone
       const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const zonedDate = toZonedTime(dueDate, userTimezone);
-      // Format with month, year, and time, excluding day (e.g., "Jul 2025 15:34")
-      return format(zonedDate, "HH:mm") + " (" + userTimezone + ")";
+      // Format with date and time (e.g., "dd MMM yyyy HH:mm")
+      return format(zonedDate, "dd MMM yyyy HH:mm") + " (" + userTimezone + ")";
     } catch (e) {
       console.error("Timezone conversion error:", e);
-      return format(dueDate, "HH:mm") + " (UTC)"; // Fallback to UTC
+      return format(dueDate, "dd MMM yyyy HH:mm") + " (UTC)"; // Fallback to UTC
     }
   };
 
@@ -157,10 +143,11 @@ const TaskComponent = ({
   const deleteMutation = useMutation({
     mutationFn: deleteTask,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", "Today"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", "Completed"] });
       toast.success("Task deleted successfully!");
     },
     onError: (err: any) => {
+      console.error("Mutation error:", err);
       toast.error(err.message || "Failed to delete task");
     },
   });
@@ -185,10 +172,12 @@ const TaskComponent = ({
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks", "Today"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", "Inbox"] });
       queryClient.invalidateQueries({ queryKey: ["tasks", "Completed"] });
       toast.success("Task marked as completed!");
     },
     onError: (err: any) => {
+      console.error("Mutation error:", err);
       toast.error(err.message || "Failed to complete task");
     },
   });

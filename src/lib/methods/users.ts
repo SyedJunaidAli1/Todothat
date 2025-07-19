@@ -33,7 +33,7 @@ export const signOut = async () => {
     console.log("Attempting signOut");
     const requestHeaders = await headers()
     const headersObject = Object.fromEntries(requestHeaders)
-    await auth.api.signOut({ headers: headersObject });
+    await auth.api.signOut({ headers: headersObject })
     return { success: true }
   } catch (error) {
     console.error("Signout error", error);

@@ -8,7 +8,7 @@ interface CompletedPageProps {
   onEditTask: (task: Task) => void;
 }
 
-const CompletedPage = ({ onEditTask }: CompletedPageProps) => {
+const Page = ({ onEditTask }: CompletedPageProps) => {
   const queryClient = useQueryClient();
 
   // Fetch completed tasks using TanStack Query
@@ -89,7 +89,7 @@ const CompletedPage = ({ onEditTask }: CompletedPageProps) => {
                   <p className="text-s">{task.description}</p>
                 )}
                 <p className="text-sm">Due: {formatDueDate(task.dueDate)}</p>
-                <p className="text-md">Project: {task.project}</p>
+                <p className="text-md">Project: {task.projectId}</p>
               </div>
               <div className="flex gap-2">
                 {/* Removed Edit and Delete buttons */}
@@ -102,4 +102,4 @@ const CompletedPage = ({ onEditTask }: CompletedPageProps) => {
   );
 };
 
-export default CompletedPage;
+export default Page;

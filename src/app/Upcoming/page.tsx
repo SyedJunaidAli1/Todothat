@@ -23,7 +23,7 @@ interface UpcomingPageProps {
   onEditTask: (task: Task) => void;
 }
 
-const UpcomingPage = ({ onAddTask, onEditTask }: UpcomingPageProps) => {
+const Page = ({ onAddTask, onEditTask }: UpcomingPageProps) => {
   const queryClient = useQueryClient();
 
   // Fetch tasks with future due dates (excluding completed)
@@ -97,7 +97,7 @@ const UpcomingPage = ({ onAddTask, onEditTask }: UpcomingPageProps) => {
   );
 };
 
-export default UpcomingPage;
+export default Page;
 
 const TaskComponent = ({
   task,
@@ -182,7 +182,7 @@ const TaskComponent = ({
         title: task.title,
         description: task.description || "",
         dueDate: task.dueDate,
-        project: task.project,
+        project: task.projects,
         completed: true,
       });
     }
@@ -210,7 +210,7 @@ const TaskComponent = ({
               Due: {formatDueTime(task.dueDate)}
               {isOverdue && <span className="text-red-500 ml-2">(Overdue)</span>}
             </p>
-            <p className="text-sm">Project: {task.project}</p>
+            <p className="text-sm">Project: {task.projects.name}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">

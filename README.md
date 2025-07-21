@@ -31,6 +31,7 @@
 - [x] My Projects with Dynamic Project add delete btn for them
 - [x] My Projects with Dynamic Project filter tasks accordingly
 - [] My Projects with Tasks render them on right panel
+- [] for indepentend routes attach dashboard component in the layout
 - [x] Todo save with timezone
 - [x] display time in localtime zone of the user
 - [] Todo set timer for notify

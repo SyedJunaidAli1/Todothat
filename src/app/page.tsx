@@ -1,21 +1,19 @@
 "use client";
 import { PagesTopLoader } from "nextjs-toploader/pages";
-import { Sidebar, SidebarItem } from "./components/Sidebar";
+import AppSidebar from "./components/AppSidebar";
 import {
   CalendarDays,
   CalendarFold,
   CirclePlus,
   ClipboardCheck,
   InboxIcon,
-  Search,
   Folder,
-  Trash,
 } from "lucide-react";
 import ThemeToggle from "./components/ThemeToggle";
-import Inbox from "./Inbox/page";
-import Completed from "./Completed/page";
-import Upcoming from "./Upcoming/page";
-import Today from "./Today/page";
+import Inbox from "./inbox/page";
+import Completed from "./completed/page";
+import Upcoming from "./upcoming/page";
+import Today from "./today/page";
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { createTask, updateTask, Task, getTasks } from "@/lib/methods/tasks";
@@ -44,7 +42,6 @@ import {
   deleteProjects,
   getProjects,
 } from "@/lib/methods/projects";
-import Link from "next/link";
 
 interface Project {
   id: string;
@@ -252,73 +249,16 @@ export default function Home() {
   return (
     <div className="flex w-full h-screen">
       <PagesTopLoader color="#50C878" />
-      <Sidebar onItemSelect={handleItemSelect}>
-        <SidebarItem
-          icon={<CirclePlus />}
-          text="Add Task"
-          active={activeItem === "Add Task"}
-        />
-        <SidebarItem
-          icon={<Search />}
-          text="Search"
-          active={activeItem === "Search"}
-        />
-        <SidebarItem
-          icon={<InboxIcon />}
-          text="Inbox"
-          alert
-          active={activeItem === "Inbox"}
-        />
-        <SidebarItem
-          icon={<CalendarFold />}
-          text="Today"
-          active={activeItem === "Today"}
-        />
-        <SidebarItem
-          icon={<CalendarDays />}
-          text="Upcoming"
-          active={activeItem === "Upcoming"}
-        />
-        <SidebarItem
-          icon={<ClipboardCheck />}
-          text="Completed"
-          active={activeItem === "Completed"}
-        />
-        <SidebarItem
-          icon={<Folder />}
-          text="My Projects"
-          active={activeItem === "My Projects"}
-          prefixIcon={
-            <CirclePlus
-              className="w-4 h-4 cursor-pointer"
-              onClick={() => handleItemSelect("Add Project")}
-            />
-          }
-        >
-          {projects.map((project) => (
-            <SidebarItem
-              key={project.id}
-              icon={<Folder className="w-4 h-4" />}
-              text={
-                <div className="flex justify-between items-center w-full">
-                  <Link
-                    href={`/Projects/${project.id}`}
-                    className="flex-1 truncate cursor-pointer hover:underline"
-                    onClick={() => handleItemSelect(project.name)}
-                  >
-                    {project.name}
-                  </Link>
-                  <Trash
-                    className="w-4 h-4 ml-2 text-red-500 hover:text-red-700 cursor-pointer"
-                    onClick={(e) => handleDeleteProject(e, project.id)}
-                  />
-                </div>
-              }
-              active={activeItem === project.name}
-            />
-          ))}
-        </SidebarItem>
-      </Sidebar>
+      <AppSidebar
+        projects={projects}
+        onAddProject={() => setIsProjectModalOpen(true)}
+        onAddTask={() => {
+          setEditingTask(null);
+          setIsTaskModalOpen(true);
+        }}
+        onSearch={() => setIsSearchOpen(true)}
+        onDeleteProject={handleDeleteProject}
+      />
       <div className="flex-1">
         <header className="p-4 flex justify-end">
           <ThemeToggle />

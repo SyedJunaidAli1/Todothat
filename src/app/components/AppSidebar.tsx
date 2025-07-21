@@ -61,7 +61,7 @@ function AppSidebar({
                 expanded ? "w-32" : "w-0"
               }`}
             >
-              Todothat
+              <Link href={"/"}>Todothat</Link>
             </h1>
             <button
               onClick={() => setExpanded((c) => !c)}
@@ -71,7 +71,7 @@ function AppSidebar({
             </button>
           </div>
 
-          <ul className="flex-1 px-3">
+          <ul className="flex-1 px-3 m-auto">
             {/* Actions */}
             <SidebarItem
               icon={<CirclePlus />}
@@ -254,7 +254,7 @@ function SidebarItem({
             }`}
           >
             {React.Children.map(children, (child) =>
-              React.cloneElement(child as React.ReactElement,)
+              React.cloneElement(child as React.ReactElement)
             )}
           </ul>
         )}

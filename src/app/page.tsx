@@ -10,10 +10,10 @@ import {
   Folder,
 } from "lucide-react";
 import ThemeToggle from "./components/ThemeToggle";
-import Inbox from "./inbox/page";
-import Completed from "./completed/page";
-import Upcoming from "./upcoming/page";
-import Today from "./today/page";
+import Inbox from "./Inbox/page";
+import Completed from "./Completed/page";
+import Upcoming from "./Upcoming/page";
+import Today from "./Today/page";
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { createTask, updateTask, Task, getTasks } from "@/lib/methods/tasks";
@@ -248,7 +248,7 @@ export default function Home() {
 
   return (
     <div className="flex w-full h-screen">
-      <PagesTopLoader color="#50C878" />
+      {/* <PagesTopLoader color="#50C878" />
       <AppSidebar
         projects={projects}
         onAddProject={() => setIsProjectModalOpen(true)}
@@ -290,7 +290,7 @@ export default function Home() {
           });
         }}
         projects={projects}
-      />
+      /> */}
       <Dialog open={isProjectModalOpen} onOpenChange={setIsProjectModalOpen}>
         <DialogTrigger asChild>
           <span className="hidden">Add Project</span>

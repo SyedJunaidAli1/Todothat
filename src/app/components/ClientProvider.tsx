@@ -1,51 +1,28 @@
-// "use client"
-// import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-// import { ReactNode, useState } from "react";
-// import { ThemeProvider } from "@/components/ui/theme-provider";
-// import { Toaster } from "@/components/ui/sonner";
-// import NextTopLoader from "nextjs-toploader";
-
-// export default function ClientProvider({ children }: { children: ReactNode }) {
-//   const [client] = useState(() => new QueryClient());
-
-//   return (
-//     <QueryClientProvider client={client}>
-//       <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-//         <main>
-//           <NextTopLoader color="#50C878" />
-//           {children}
-//         </main>
-//         <Toaster richColors />
-//       </ThemeProvider>
-//     </QueryClientProvider>
-//   );
-// }
-
 "use client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import NextTopLoader from "nextjs-toploader";
 
-/* sidebar + modals */
+/* UI and modals */
 import AppSidebar from "@/app/components/AppSidebar";
 import TaskModal from "@/app/components/TaskModal";
+
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import ThemeToggle from "@/app/components/ThemeToggle";
 
-/* data */
+/* Data helpers */
 import { createTask, updateTask, Task } from "@/lib/methods/tasks";
-import {
-  createProject,
-  deleteProjects,
-  getProjects,
-} from "@/lib/methods/projects";
+import { createProject, deleteProjects, getProjects } from "@/lib/methods/projects";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
+import GlobalSearch from "./Globalsearch";
 import { Button } from "@/components/ui/button";
-import ThemeToggle from "./ThemeToggle";
 
+/* Root provider --------------------------------------------------------- */
 export default function ClientProvider({ children }: { children: ReactNode }) {
   const [client] = useState(() => new QueryClient());
 
@@ -60,23 +37,46 @@ export default function ClientProvider({ children }: { children: ReactNode }) {
   );
 }
 
-/* ---------- child that uses useQuery ---------- */
+/* Layout with sidebar & modals ----------------------------------------- */
 function LayoutWithSidebar({ children }: { children: ReactNode }) {
-  /* projects */
+  /* --------------------------------- refs -------------------------------- */
+  const searchRef = useRef<{ open: () => void }>(null);
+
+  /* ------------------------------- projects ------------------------------ */
   const { data: projects = [], refetch: refetchProjects } = useQuery({
     queryKey: ["projects"],
     queryFn: getProjects,
   });
 
-  /* task modal */
+  /* ------------------------------- modals -------------------------------- */
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
-
-  /* project modal */
   const [newProjectName, setNewProjectName] = useState("");
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
 
-  /* --- handlers --- */
+  /* ------------------------ query-string modal triggers ------------------ */
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const modal = searchParams.get("modal");
+    if (modal === "add-task") {
+      setEditingTask(null);
+      setIsTaskModalOpen(true);
+    } else if (modal === "add-project") {
+      setIsProjectModalOpen(true);
+    }
+  }, [searchParams]);
+
+  /* ------------------------ clean URL after open ------------------------- */
+  useEffect(() => {
+    if (isTaskModalOpen || isProjectModalOpen) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("modal");
+      window.history.replaceState(null, "", url.toString());
+    }
+  }, [isTaskModalOpen, isProjectModalOpen]);
+
+  /* --------------------------- event handlers ---------------------------- */
   const handleTaskSubmit = async ({
     title,
     description,
@@ -126,8 +126,13 @@ function LayoutWithSidebar({ children }: { children: ReactNode }) {
     toast.success("Project deleted");
   };
 
+  /* ----------------------------- layout JSX ------------------------------ */
   return (
     <div className="flex w-full h-screen">
+      {/* Global search dialog (controlled via ref) */}
+      <GlobalSearch ref={searchRef} />
+
+      {/* Sidebar */}
       <AppSidebar
         projects={projects}
         onAddProject={() => setIsProjectModalOpen(true)}
@@ -135,19 +140,19 @@ function LayoutWithSidebar({ children }: { children: ReactNode }) {
           setEditingTask(null);
           setIsTaskModalOpen(true);
         }}
-        onSearch={() => {
-          /* open global search dialog later */
-        }}
+        onSearch={() => searchRef.current?.open()}
         onDeleteProject={handleDeleteProject}
       />
 
+      {/* Theme toggle (top-right) */}
       <div className="absolute top-4 right-4 z-20">
         <ThemeToggle />
       </div>
-      
+
+      {/* Main content area */}
       <main className="flex-1 flex flex-col overflow-hidden">{children}</main>
 
-      {/* shared modals */}
+      {/* Shared modals */}
       <TaskModal
         isOpen={isTaskModalOpen}
         onOpenChange={setIsTaskModalOpen}

@@ -30,8 +30,8 @@
 - [x] My Projects with Dynamic Project
 - [x] My Projects with Dynamic Project add delete btn for them
 - [x] My Projects with Dynamic Project filter tasks accordingly
-- [] My Projects with Tasks render them on right panel
-- [] for indepentend routes attach dashboard component in the layout
+- [x] My Projects with Tasks render them on right panel
+- [x] for indepentend routes attach dashboard component in the layout
 - [x] Todo save with timezone
 - [x] display time in localtime zone of the user
 - [] Todo set timer for notify
@@ -43,7 +43,14 @@
 - [] change task project field from text to unique id
 - [] Google authentication
 - [x] rdbms relations sql drizzle
-#known issue
 
+#not working bc of layout changes
+- [x] Search btn is not working in this bc is is not using the code for search btn
+- [] after projects delete navigate to inbox
+- [x] control/commad + k use effect is not working for search bar
+- [] in search bar when we click on the tasks nothin hapens
+- [] Addtask and edittask are not working under routes eg: /today, /inbox, etc
+
+#known issue
 - [x] ApiError Failed to create use
 - [x] DialogTitle issue fix

@@ -89,9 +89,7 @@ export default function TaskModal({
           dueDateValue.setHours(hours, minutes);
         }
       }
-
       await onSubmit({ title, description, dueDate: dueDateValue, projectId });
-
       onOpenChange(false);
     } catch (err: any) {
       setError(err.message || "Failed to save task");

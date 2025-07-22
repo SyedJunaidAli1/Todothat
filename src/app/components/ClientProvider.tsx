@@ -15,12 +15,17 @@ import ThemeToggle from "@/app/components/ThemeToggle";
 
 /* Data helpers */
 import { createTask, updateTask, Task } from "@/lib/methods/tasks";
-import { createProject, deleteProjects, getProjects } from "@/lib/methods/projects";
+import {
+  createProject,
+  deleteProjects,
+  getProjects,
+} from "@/lib/methods/projects";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
 import GlobalSearch from "./Globalsearch";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "nextjs-toploader/app";
 
 /* Root provider --------------------------------------------------------- */
 export default function ClientProvider({ children }: { children: ReactNode }) {
@@ -53,6 +58,7 @@ function LayoutWithSidebar({ children }: { children: ReactNode }) {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
 
   /* ------------------------ query-string modal triggers ------------------ */
   const searchParams = useSearchParams();
@@ -118,12 +124,13 @@ function LayoutWithSidebar({ children }: { children: ReactNode }) {
     refetchProjects();
     toast.success("Project added!");
   };
-
+  const router = useRouter()
   const handleDeleteProject = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     await deleteProjects(id);
     refetchProjects();
     toast.success("Project deleted");
+    router.push("/inbox?_=" + Date.now(), { scroll: true });
   };
 
   /* ----------------------------- layout JSX ------------------------------ */
@@ -160,6 +167,32 @@ function LayoutWithSidebar({ children }: { children: ReactNode }) {
         onSubmit={handleTaskSubmit}
         projects={projects}
       />
+
+      <Dialog
+        open={!!projectToDelete}
+        onOpenChange={() => setProjectToDelete(null)}
+      >
+        <DialogContent>
+          <DialogTitle>Delete project?</DialogTitle>
+          <p>This action cannot be undone.</p>
+          <div className="flex gap-2 justify-end">
+            <Button variant="outline" onClick={() => setProjectToDelete(null)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={async () => {
+                await deleteProjects(projectToDelete!);
+                refetchProjects();
+                toast.success("Project deleted");
+                setProjectToDelete(null);
+              }}
+            >
+              Delete
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={isProjectModalOpen} onOpenChange={setIsProjectModalOpen}>
         <DialogContent className="max-w-md">

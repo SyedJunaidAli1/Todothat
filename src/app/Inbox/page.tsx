@@ -38,7 +38,7 @@ const Page = ({ onAddTask, onEditTask }: InboxPageProps) => {
 
   // Default content when there are no tasks
   const defaultContent = (
-    <div className="flex flex-col gap-2 px-6">
+    <div className="flex flex-col gap-2 px-6 mt-18">
       <h2 className="text-2xl">Inbox</h2>
       <h3>No tasks in inbox</h3>
       <p>Add a task to get started!</p>
@@ -54,7 +54,7 @@ const Page = ({ onAddTask, onEditTask }: InboxPageProps) => {
   // Handle loading and error states
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-2 px-6">
+      <div className="flex flex-col gap-2 px-6 mt-18">
         <h2 className="text-2xl">Inbox</h2>
         <p>Loading tasks...</p>
       </div>
@@ -63,7 +63,7 @@ const Page = ({ onAddTask, onEditTask }: InboxPageProps) => {
 
   if (error) {
     return (
-      <div className="flex flex-col gap-2 px-6">
+      <div className="flex flex-col gap-2 px-6 mt-18">
         <h2 className="text-2xl">Inbox</h2>
         <p className="text-red-500">Failed to load tasks: {error.message}</p>
       </div>
@@ -77,7 +77,7 @@ const Page = ({ onAddTask, onEditTask }: InboxPageProps) => {
 
   // If there are tasks, display them in a list
   return (
-    <div className="flex flex-col gap-4 px-6">
+    <div className="flex flex-col gap-4 px-6 mt-18">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl">Inbox</h2>
         <button

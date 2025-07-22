@@ -392,33 +392,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-
 import { toast } from "sonner";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from "@/components/ui/command";
 import { useSearchParams } from "next/navigation";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import {
-  createProject,
-  getProjects,
-} from "@/lib/methods/projects";
-import {
-  InboxIcon,
-  CalendarFold,
-  CalendarDays,
-  ClipboardCheck,
-  CirclePlus,
-  Folder,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+import { createProject, getProjects } from "@/lib/methods/projects";
 
 interface Project {
   id: string;
@@ -529,9 +506,6 @@ export default function Home() {
     <div className="p-6">
       <h2 className="text-2xl font-bold">Welcome</h2>
       <p>Select an item to view its content.</p>
-
-
-
     </div>
   );
 }

@@ -137,7 +137,7 @@ function AppSidebar({
               }
             >
               {projects.map((project) => (
-                <Link key={project.id} href={`/Projects/${project.id}`}>
+                <Link key={project.id} href={`/projects/${project.id}`}>
                   <div className="contents">
                     <SidebarItem
                       icon={<Folder className="w-4 h-4" />}
@@ -148,7 +148,11 @@ function AppSidebar({
                           </span>
                           <Trash
                             className="w-4 h-4 ml-2 text-red-500 hover:text-red-700 cursor-pointer"
-                            onClick={(e) => onDeleteProject(e, project.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              onDeleteProject(e, project.id);
+                            }}
                           />
                         </div>
                       }

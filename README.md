@@ -48,7 +48,8 @@
 - [x] Search btn is not working in this bc is is not using the code for search btn
 - [] after projects delete navigate to inbox
 - [x] control/commad + k use effect is not working for search bar
-- [] in search bar when we click on the tasks nothin hapens
+- [x] in search bar when we click on the tasks nothin hapens
+- [x] Aingn theme toggler properly
 - [] Addtask and edittask are not working under routes eg: /today, /inbox, etc
 
 #known issue

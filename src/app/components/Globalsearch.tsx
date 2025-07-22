@@ -12,7 +12,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import {
   InboxIcon,
   CalendarFold,
@@ -96,6 +96,7 @@ const GlobalSearch = forwardRef<{ open: () => void }, {}>((_, ref) => {
               onSelect={() => {
                 setOpen(false);
                 /* open task detail / edit modal here */
+                router.push(`/inbox?task=${t.id}`);
               }}
             >
               {t.title}

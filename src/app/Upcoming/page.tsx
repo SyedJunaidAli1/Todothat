@@ -39,7 +39,7 @@ const Page = ({ onAddTask, onEditTask }: UpcomingPageProps) => {
 
   // Default content when there are no tasks
   const defaultContent = (
-    <div className="flex flex-col gap-2 px-6">
+    <div className="flex flex-col gap-2 px-6 mt-18">
       <h2 className="text-2xl">Upcoming</h2>
       <h3>No upcoming tasks</h3>
       <p>Add a task with a future due date to get started!</p>
@@ -55,7 +55,7 @@ const Page = ({ onAddTask, onEditTask }: UpcomingPageProps) => {
   // Handle loading and error states
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-2 px-6">
+      <div className="flex flex-col gap-2 px-6 mt-18">
         <h2 className="text-2xl">Upcoming</h2>
         <p>Loading tasks...</p>
       </div>
@@ -64,7 +64,7 @@ const Page = ({ onAddTask, onEditTask }: UpcomingPageProps) => {
 
   if (error) {
     return (
-      <div className="flex flex-col gap-2 px-6">
+      <div className="flex flex-col gap-2 px-6 mt-18">
         <h2 className="text-2xl">Upcoming</h2>
         <p className="text-red-500">Failed to load tasks: {error.message}</p>
       </div>
@@ -78,7 +78,7 @@ const Page = ({ onAddTask, onEditTask }: UpcomingPageProps) => {
 
   // If there are tasks, display them in a list
   return (
-    <div className="flex flex-col gap-4 px-6">
+    <div className="flex flex-col gap-4 px-6 mt-18">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl">Upcoming</h2>
         <button

@@ -41,7 +41,7 @@ const Page = ({ onEditTask }: CompletedPageProps) => {
 
   // Default content when there are no completed tasks
   const defaultContent = (
-    <div className="flex flex-col gap-2 px-6">
+    <div className="flex flex-col gap-2 px-6 mt-18">
       <h2 className="text-2xl">Completed</h2>
       <h3>No completed tasks yet</h3>
       <p>Finish some tasks to see them here!</p>
@@ -51,7 +51,7 @@ const Page = ({ onEditTask }: CompletedPageProps) => {
   // Handle loading and error states
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-2 px-6">
+      <div className="flex flex-col gap-2 px-6 mt-18">
         <h2 className="text-2xl">Completed</h2>
         <p>Loading tasks...</p>
       </div>
@@ -60,7 +60,7 @@ const Page = ({ onEditTask }: CompletedPageProps) => {
 
   if (error) {
     return (
-      <div className="flex flex-col gap-2 px-6">
+      <div className="flex flex-col gap-2 px-6 mt-18">
         <h2 className="text-2xl">Completed</h2>
         <p className="text-red-500">Failed to load tasks: {error.message}</p>
       </div>
@@ -74,7 +74,7 @@ const Page = ({ onEditTask }: CompletedPageProps) => {
 
   // If there are tasks, display them in a list
   return (
-    <div className="flex flex-col gap-4 px-6">
+    <div className="flex flex-col gap-4 px-6 mt-18">
       <h2 className="text-2xl">Completed</h2>
       <ul className="space-y-4">
         {tasks.map((task) => (

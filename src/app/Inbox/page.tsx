@@ -1,6 +1,12 @@
 "use client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getTasks, Task, updateTask, deleteTask } from "@/lib/methods/tasks";
+import {
+  getTasks,
+  Task,
+  updateTask,
+  deleteTask,
+  createTask,
+} from "@/lib/methods/tasks";
 import { format, toZonedTime } from "date-fns-tz";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,14 +23,30 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
+import TaskModal from "../components/TaskModal";
+import { getProjects } from "@/lib/methods/projects";
 
-interface InboxPageProps {
-  onAddTask: () => void;
-  onEditTask: (task: Task) => void;
-}
-
-const Page = ({ onAddTask, onEditTask }: InboxPageProps) => {
+const Page = () => {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
   const queryClient = useQueryClient();
+
+  const openAddTaskModal = () => {
+    setEditingTask(null); // no task = create mode
+    setModalOpen(true);
+    console.log("Open Add Task modal");
+  };
+
+  const openEditTaskModal = (task: Task) => {
+    setEditingTask(task);
+    setModalOpen(true);
+    console.log("Open Edit Task modal for:", task);
+  };
+  //Fetch Proects for task
+  const { data: projects = [] } = useQuery({
+    queryKey: ["projects"],
+    queryFn: getProjects,
+  });
 
   // Fetch all tasks (no due date filter, excluding completed)
   const {
@@ -43,7 +65,7 @@ const Page = ({ onAddTask, onEditTask }: InboxPageProps) => {
       <h3>No tasks in inbox</h3>
       <p>Add a task to get started!</p>
       <button
-        onClick={onAddTask}
+        onClick={openAddTaskModal}
         className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
       >
         Add Task
@@ -75,13 +97,57 @@ const Page = ({ onAddTask, onEditTask }: InboxPageProps) => {
     return defaultContent;
   }
 
+  const handleSubmit = async ({
+    title,
+    description,
+    dueDate,
+    projectId,
+  }: {
+    title: string;
+    description: string;
+    dueDate?: Date;
+    projectId: string | null;
+  }) => {
+    try {
+      if (editingTask) {
+        // Editing an existing task
+        await updateTask(
+          editingTask.id,
+          title,
+          description,
+          dueDate,
+          projectId || "",
+          editingTask.completed
+        );
+        toast.success("Task updated!");
+      } else {
+        // Creating a new task
+        await createTask({
+          title,
+          description,
+          dueDate,
+          project: projectId || "",
+          completed: false,
+        });
+        toast.success("Task created!");
+      }
+
+      setModalOpen(false); // close modal
+      await queryClient.invalidateQueries({ queryKey: ["tasks", "Inbox"] });
+
+      // refresh tasks
+    } catch (err: any) {
+      toast.error(err.message || "Something went wrong.");
+    }
+  };
+
   // If there are tasks, display them in a list
   return (
     <div className="flex flex-col gap-4 px-6 mt-18">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl">Inbox</h2>
         <button
-          onClick={onAddTask}
+          onClick={openAddTaskModal}
           className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
         >
           Add Task
@@ -89,9 +155,20 @@ const Page = ({ onAddTask, onEditTask }: InboxPageProps) => {
       </div>
       <ul className="space-y-4">
         {tasks.map((task) => (
-          <TaskComponent task={task} onEditTask={onEditTask} key={task.id} />
+          <TaskComponent
+            task={task}
+            onEditTask={openEditTaskModal}
+            key={task.id}
+          />
         ))}
       </ul>
+      <TaskModal
+        isOpen={isModalOpen}
+        onOpenChange={setModalOpen}
+        editingTask={editingTask}
+        onSubmit={handleSubmit}
+        projects={projects}
+      />
     </div>
   );
 };

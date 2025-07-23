@@ -1,4 +1,5 @@
 #TODO
+
 - [x] Make sidebar with all the features
 - [x] make theme toggle button
 - [x] make Profile in footer of the sidebar
@@ -39,19 +40,21 @@
 - [] Todo notify by email
 - [x] learn about tanstack query
 - [x] drizzle default now with timezone
-- [x] Store timezone tasks (new Date()).toISOString() 
+- [x] Store timezone tasks (new Date()).toISOString()
 - [] change task project field from text to unique id
 - [] Google authentication
 - [x] rdbms relations sql drizzle
 
-#not working bc of layout changes
+# not working bc of layout changes
+
 - [x] Search btn is not working in this bc is is not using the code for search btn
 - [] after projects delete navigate to inbox
 - [x] control/commad + k use effect is not working for search bar
 - [x] in search bar when we click on the tasks nothin hapens
 - [x] Aingn theme toggler properly
-- [] Addtask and edittask are not working under routes eg: /today, /inbox, etc
+- [x] Addtask and edittask are not working under routes eg: /today, /inbox, etc
 
 #known issue
+
 - [x] ApiError Failed to create use
 - [x] DialogTitle issue fix

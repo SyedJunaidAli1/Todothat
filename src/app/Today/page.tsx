@@ -1,7 +1,13 @@
 "use client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getTasks, Task, deleteTask, updateTask } from "@/lib/methods/tasks";
-import { format, toZonedTime } from "date-fns-tz"; // Switch to date-fns-tz
+import {
+  getTasks,
+  Task,
+  deleteTask,
+  updateTask,
+  createTask,
+} from "@/lib/methods/tasks";
+import { format, toZonedTime } from "date-fns-tz";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -17,55 +23,81 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
+import TaskModal from "../components/TaskModal"; // Make sure this is your modal
 
-interface TodayPageProps {
-  onAddTask: () => void;
-  onEditTask: (task: Task) => void;
-}
-
-const Page = ({ onAddTask, onEditTask }: TodayPageProps) => {
+// ---- MAIN PAGE ----
+const Page = () => {
   const queryClient = useQueryClient();
 
-  // State to track the current time, updated every minute
-  const [currentTime, setCurrentTime] = useState(new Date()); // Current date: July 04, 2025, 03:34 PM IST
+  // -- Modal and editing state
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
-  // Update currentTime every minute
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 60 * 1000); // Update every minute
+  // For "today" filter
+  const today = new Date();
 
-    // Clean up the interval on component unmount
-    return () => clearInterval(interval);
-  }, []);
-
-  // Fetch tasks due today using TanStack Query, excluding completed tasks
-  const today = new Date(); // July 04, 2025, 03:34 PM IST
+  // Fetch tasks due today, incomplete only
   const {
     data: tasks = [],
     isLoading,
     error,
   } = useQuery<Task[]>({
     queryKey: ["tasks", "Today", today.toISOString().split("T")[0]],
-    queryFn: () => getTasks(undefined, today, undefined, false), // Fetch only incomplete tasks due today
+    queryFn: () => getTasks(undefined, today, undefined, false),
   });
 
-  // Default content when there are no tasks for today
-  const defaultContent = (
-    <div className="flex flex-col gap-2 px-6 mt-18">
-      <h2 className="text-2xl">Today</h2>
-      <h3>No tasks for today</h3>
-      <p>Add a task to get started with your day!</p>
-      <button
-        onClick={onAddTask}
-        className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
-      >
-        Add Task
-      </button>
-    </div>
-  );
+  // ---- MODAL OPENERS ----
+  const openAddTaskModal = () => {
+    setEditingTask(null);
+    setModalOpen(true);
+  };
 
-  // Handle loading and error states
+  const openEditTaskModal = (task: Task) => {
+    setEditingTask(task);
+    setModalOpen(true);
+  };
+
+  // ---- HANDLE ADD/EDIT ----
+  const handleSubmit = async ({
+    title,
+    description,
+    dueDate,
+    projectId,
+  }: {
+    title: string;
+    description: string;
+    dueDate?: Date;
+    projectId: string | null;
+  }) => {
+    try {
+      if (editingTask) {
+        await updateTask(
+          editingTask.id,
+          title,
+          description,
+          dueDate,
+          projectId || "",
+          editingTask.completed
+        );
+        toast.success("Task updated!");
+      } else {
+        await createTask(
+          title,
+          description,
+          dueDate ?? undefined,
+          projectId || null
+        );
+        toast.success("Task created!");
+      }
+      setModalOpen(false);
+      await queryClient.invalidateQueries({ queryKey: ["tasks", "Today"] });
+    } catch (err: any) {
+      toast.error(err.message || "Something went wrong.");
+    }
+  };
+
+  // ---- UI ----
+
   if (isLoading) {
     return (
       <div className="flex flex-col gap-2 px-6 mt-18">
@@ -84,18 +116,37 @@ const Page = ({ onAddTask, onEditTask }: TodayPageProps) => {
     );
   }
 
-  // If there are no tasks for today, show the default content
+  // Default content when nothing for today
   if (tasks.length === 0) {
-    return defaultContent;
+    return (
+      <div className="flex flex-col gap-2 px-6 mt-18">
+        <h2 className="text-2xl">Today</h2>
+        <h3>No tasks for today</h3>
+        <p>Add a task to get started with your day!</p>
+        <button
+          onClick={openAddTaskModal}
+          className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
+        >
+          Add Task
+        </button>
+        {/* The modal is still always available */}
+        <TaskModal
+          isOpen={isModalOpen}
+          onOpenChange={setModalOpen}
+          editingTask={editingTask}
+          onSubmit={handleSubmit}
+          projects={[]} // Or fetch projects if required
+        />
+      </div>
+    );
   }
 
-  // If there are tasks, display them in a list
   return (
     <div className="flex flex-col gap-4 px-6 mt-18">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl">Today</h2>
         <button
-          onClick={onAddTask}
+          onClick={openAddTaskModal}
           className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
         >
           Add Task
@@ -103,31 +154,41 @@ const Page = ({ onAddTask, onEditTask }: TodayPageProps) => {
       </div>
       <ul className="space-y-4">
         {tasks.map((task) => (
-          <TaskComponent task={task} onEditTask={onEditTask} key={task.id} />
+          <TaskComponent
+            key={task.id}
+            task={task}
+            openEditTaskModal={openEditTaskModal}
+          />
         ))}
       </ul>
+      <TaskModal
+        isOpen={isModalOpen}
+        onOpenChange={setModalOpen}
+        editingTask={editingTask}
+        onSubmit={handleSubmit}
+        projects={[]} // Or fetch projects if you want
+      />
     </div>
   );
 };
 
 export default Page;
 
+// ---- PRESENTATIONAL TASK (no add/edit props) ----
 const TaskComponent = ({
   task,
-  onEditTask,
+  openEditTaskModal,
 }: {
   task: Task;
-  onEditTask: (task: Task) => void;
+  openEditTaskModal: (task: Task) => void;
 }) => {
+  const queryClient = useQueryClient();
   const [isOverdue, setIsOverdue] = useState(() => {
     const dueDate = task.dueDate;
     const currentTime = new Date();
     if (!dueDate) return false;
     return dueDate < currentTime;
   });
-
-  const queryClient = useQueryClient();
-
   useEffect(() => {
     const interval = setInterval(() => {
       const dueDate = task.dueDate;
@@ -138,22 +199,19 @@ const TaskComponent = ({
     return () => clearInterval(interval);
   }, [task.dueDate]);
 
-  // Format due time with user's local timezone, including month and year, no day
+  // Format (shortened for simplicity)
   const formatDueTime = (dueDate: Date | null) => {
     if (!dueDate) return "No due time";
     try {
-      // Convert UTC to user's local timezone
       const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const zonedDate = toZonedTime(dueDate, userTimezone);
-      // Format with month, year, and time, excluding day (e.g., "Jul 2025 15:34")
       return format(zonedDate, "HH:mm") + " (" + userTimezone + ")";
     } catch (e) {
-      console.error("Timezone conversion error:", e);
-      return format(dueDate, "HH:mm") + " (UTC)"; // Fallback to UTC
+      return format(dueDate, "HH:mm") + " (UTC)";
     }
   };
 
-  // Mutation for deleting a task
+  // Mutations
   const deleteMutation = useMutation({
     mutationFn: deleteTask,
     onSuccess: () => {
@@ -165,7 +223,6 @@ const TaskComponent = ({
     },
   });
 
-  // Mutation for completing a task
   const completeMutation = useMutation({
     mutationFn: (params: {
       taskId: number;
@@ -239,7 +296,11 @@ const TaskComponent = ({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => onEditTask(task)}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => openEditTaskModal(task)}
+          >
             Edit
           </Button>
           <AlertDialog>

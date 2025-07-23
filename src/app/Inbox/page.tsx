@@ -34,13 +34,11 @@ const Page = () => {
   const openAddTaskModal = () => {
     setEditingTask(null); // no task = create mode
     setModalOpen(true);
-    console.log("Open Add Task modal");
   };
 
   const openEditTaskModal = (task: Task) => {
     setEditingTask(task);
     setModalOpen(true);
-    console.log("Open Edit Task modal for:", task);
   };
   //Fetch Proects for task
   const { data: projects = [] } = useQuery({
@@ -122,13 +120,12 @@ const Page = () => {
         toast.success("Task updated!");
       } else {
         // Creating a new task
-        await createTask({
+        await createTask(
           title,
           description,
-          dueDate,
-          project: projectId || "",
-          completed: false,
-        });
+          dueDate ?? undefined,
+          projectId || null
+        );
         toast.success("Task created!");
       }
 

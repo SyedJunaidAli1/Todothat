@@ -45,10 +45,10 @@
 - [] Google authentication
 - [x] rdbms relations sql drizzle
 
-# not working bc of layout changes
+#not working bc of layout changes
 
 - [x] Search btn is not working in this bc is is not using the code for search btn
-- [] after projects delete navigate to inbox
+- [x] after projects delete navigate to inbox
 - [x] control/commad + k use effect is not working for search bar
 - [x] in search bar when we click on the tasks nothin hapens
 - [x] Aingn theme toggler properly

@@ -55,7 +55,7 @@ function AppSidebar({
       <aside className="h-screen">
         <nav className="h-full flex flex-col border-r shadow-sm">
           {/* Header */}
-          <div className="p-10 pb-2 flex justify-between items-center">
+          <div className="p-5 pb-2 flex justify-between items-center">
             <h1
               className={`overflow-hidden text-xl text-emerald-200 transition-all ${
                 expanded ? "w-32" : "w-0"

@@ -124,7 +124,7 @@ function LayoutWithSidebar({ children }: { children: ReactNode }) {
     refetchProjects();
     toast.success("Project added!");
   };
-  const router = useRouter()
+  const router = useRouter();
   const handleDeleteProject = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     await deleteProjects(id);

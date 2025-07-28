@@ -135,7 +135,7 @@ const Page = () => {
         {tasks.map((task) => (
           <TaskComponent
             task={task}
-            onEditTask={openEditTaskModal}
+            openEditTaskModal={openEditTaskModal}
             key={task.id}
           />
         ))}

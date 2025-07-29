@@ -5,7 +5,6 @@ import { schema } from "@/db/schema";
 import { nextCookies } from "better-auth/next-js";
 import { Resend } from 'resend';
 
-
 const resend = new Resend(process.env.RESEND_API_KEY!);
 export const auth = betterAuth({
     emailAndPassword: {
@@ -47,4 +46,3 @@ export const auth = betterAuth({
     }),
     plugins: [nextCookies()],
 });
-

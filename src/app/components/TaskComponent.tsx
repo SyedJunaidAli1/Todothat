@@ -26,6 +26,7 @@ const TaskComponent = ({
 }) => {
   const queryClient = useQueryClient();
   const [isOverdue, setIsOverdue] = useState(() => {
+  
     const dueDate = task.dueDate;
     const currentTime = new Date();
     if (!dueDate) return false;

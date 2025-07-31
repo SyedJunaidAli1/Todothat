@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ClientProvider from "./components/ClientProvider";
-import { KnockProvider } from "./components/KnockProvider";
 
 export const metadata: Metadata = {
   title: "Todothat",
@@ -16,9 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body cz-shortcut-listen="true">
-        <ClientProvider>
-          <KnockProvider>{children}</KnockProvider>
-        </ClientProvider>
+        <ClientProvider>{children}</ClientProvider>
       </body>
     </html>
   );

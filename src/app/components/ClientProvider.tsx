@@ -152,7 +152,7 @@ function LayoutWithSidebar({ children }: { children: ReactNode }) {
       />
 
       {/* Theme toggle (top-right) */}
-      <div className="absolute top-4 right-4 z-20">
+      <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
         <ThemeToggle />
       </div>
 

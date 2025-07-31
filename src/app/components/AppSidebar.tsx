@@ -87,6 +87,7 @@ function AppSidebar({
                   icon={<InboxIcon />}
                   text="Inbox"
                   alert
+                  
                   active={activeLabel === "Inbox"}
                 />
               </span>

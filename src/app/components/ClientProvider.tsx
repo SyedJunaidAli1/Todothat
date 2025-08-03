@@ -35,7 +35,7 @@ export default function ClientProvider({ children }: { children: ReactNode }) {
     <QueryClientProvider client={client}>
       <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
         <NextTopLoader color="#50C878" />
-        <LayoutWithSidebar>{children}</LayoutWithSidebar>
+        {children}
         <Toaster richColors />
       </ThemeProvider>
     </QueryClientProvider>
@@ -43,7 +43,7 @@ export default function ClientProvider({ children }: { children: ReactNode }) {
 }
 
 /* Layout with sidebar & modals ----------------------------------------- */
-function LayoutWithSidebar({ children }: { children: ReactNode }) {
+export function LayoutWithSidebar({ children }: { children: ReactNode }) {
   /* --------------------------------- refs -------------------------------- */
   const searchRef = useRef<{ open: () => void }>(null);
 
@@ -213,3 +213,4 @@ function LayoutWithSidebar({ children }: { children: ReactNode }) {
     </div>
   );
 }
+

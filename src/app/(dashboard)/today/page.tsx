@@ -3,8 +3,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTasks, Task, updateTask, createTask } from "@/lib/methods/tasks";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
-import TaskModal from "../components/TaskModal"; // Make sure this is your modal
-import TaskComponent from "../components/TaskComponent";
+import TaskModal from "@/app/components/TaskModal"; // Make sure this is your modal
+import TaskComponent from "@/app/components/TaskComponent";
 
 // ---- MAIN PAGE ----
 const Page = () => {

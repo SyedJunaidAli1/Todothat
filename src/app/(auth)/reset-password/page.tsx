@@ -46,7 +46,7 @@ export default function Page() {
       } else {
         setMessage("Password updated! You can now sign in.");
         setTimeout(() => {
-          router.push("/Signin");
+          router.push("/signin");
         }, 3000);
       }
     } catch (err) {

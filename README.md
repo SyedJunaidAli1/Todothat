@@ -44,6 +44,7 @@
 - [] change task project field from text to unique id
 - [] Google authentication
 - [x] rdbms relations sql drizzle
+- [] For knock i have to create a knock user
 
 #not working bc of layout changes
 

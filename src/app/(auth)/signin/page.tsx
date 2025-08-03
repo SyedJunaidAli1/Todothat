@@ -88,7 +88,7 @@ export default function Page() {
             <p className="text-sm text-center">
               Forgot password?{" "}
               <a
-                href="/Forgot-password"
+                href="/forgot-password"
                 className="text-emerald-500 hover:underline"
               >
                 Reset it
@@ -96,7 +96,7 @@ export default function Page() {
             </p>
             <p className="text-sm text-center">
               No Account?{" "}
-              <a href="/Signup" className="text-emerald-500 hover:underline">
+              <a href="/signup" className="text-emerald-500 hover:underline">
                 Sign Up
               </a>
             </p>

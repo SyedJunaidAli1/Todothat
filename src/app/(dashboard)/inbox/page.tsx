@@ -3,38 +3,81 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTasks, Task, updateTask, createTask } from "@/lib/methods/tasks";
 import { toast } from "sonner";
 import { useState } from "react";
-import TaskModal from "../components/TaskModal"; // Replace path with your actual modal
-import TaskComponent from "../components/TaskComponent";
+
+import { getProjects } from "@/lib/methods/projects";
+import TaskComponent from "@/app/components/TaskComponent";
+import TaskModal from "@/app/components/TaskModal";
+
 
 const Page = () => {
-  const queryClient = useQueryClient();
   const [isModalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const queryClient = useQueryClient();
 
-  // Fetch tasks with future due dates (excluding completed)
-  const today = new Date();
+  const openAddTaskModal = () => {
+    setEditingTask(null); // no task = create mode
+    setModalOpen(true);
+  };
+
+  const openEditTaskModal = (task: Task) => {
+    setEditingTask(task);
+    setModalOpen(true);
+  };
+  //Fetch Proects for task
+  const { data: projects = [] } = useQuery({
+    queryKey: ["projects"],
+    queryFn: getProjects,
+  });
+
+  // Fetch all tasks (no due date filter, excluding completed)
   const {
     data: tasks = [],
     isLoading,
     error,
   } = useQuery<Task[]>({
-    queryKey: ["tasks", "Upcoming"],
-    queryFn: () => getTasks(undefined, undefined, today, false),
+    queryKey: ["tasks", "Inbox"],
+    queryFn: () => getTasks(undefined, undefined, undefined, false),
   });
 
-  // Open Add Task modal
-  const openAddTaskModal = () => {
-    setEditingTask(null);
-    setModalOpen(true);
-  };
+  // Default content when there are no tasks
+  const defaultContent = (
+    <div className="flex flex-col gap-2 px-6 mt-18">
+      <h2 className="text-2xl">Inbox</h2>
+      <h3>No tasks in inbox</h3>
+      <p>Add a task to get started!</p>
+      <button
+        onClick={openAddTaskModal}
+        className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
+      >
+        Add Task
+      </button>
+    </div>
+  );
 
-  // Open Edit Task modal
-  const openEditTaskModal = (task: Task) => {
-    setEditingTask(task);
-    setModalOpen(true);
-  };
+  // Handle loading and error states
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-2 px-6 mt-18">
+        <h2 className="text-2xl">Inbox</h2>
+        <p>Loading tasks...</p>
+      </div>
+    );
+  }
 
-  // Handle submit for add/edit
+  if (error) {
+    return (
+      <div className="flex flex-col gap-2 px-6 mt-18">
+        <h2 className="text-2xl">Inbox</h2>
+        <p className="text-red-500">Failed to load tasks: {error.message}</p>
+      </div>
+    );
+  }
+
+  // If there are no tasks, show the default content
+  if (tasks.length === 0) {
+    return defaultContent;
+  }
+
   const handleSubmit = async ({
     title,
     description,
@@ -48,7 +91,7 @@ const Page = () => {
   }) => {
     try {
       if (editingTask) {
-        // Edit
+        // Editing an existing task
         await updateTask(
           editingTask.id,
           title,
@@ -59,7 +102,7 @@ const Page = () => {
         );
         toast.success("Task updated!");
       } else {
-        // Add
+        // Creating a new task
         await createTask(
           title,
           description,
@@ -68,58 +111,21 @@ const Page = () => {
         );
         toast.success("Task created!");
       }
-      setModalOpen(false);
-      await queryClient.invalidateQueries({ queryKey: ["tasks", "Upcoming"] });
+
+      setModalOpen(false); // close modal
+      await queryClient.invalidateQueries({ queryKey: ["tasks", "Inbox"] });
+
+      // refresh tasks
     } catch (err: any) {
       toast.error(err.message || "Something went wrong.");
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-col gap-2 px-6 mt-18">
-        <h2 className="text-2xl">Upcoming</h2>
-        <p>Loading tasks...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex flex-col gap-2 px-6 mt-18">
-        <h2 className="text-2xl">Upcoming</h2>
-        <p className="text-red-500">Failed to load tasks: {error.message}</p>
-      </div>
-    );
-  }
-
-  if (tasks.length === 0) {
-    return (
-      <div className="flex flex-col gap-2 px-6 mt-18">
-        <h2 className="text-2xl">Upcoming</h2>
-        <h3>No upcoming tasks</h3>
-        <p>Add a task with a future due date to get started!</p>
-        <button
-          onClick={openAddTaskModal}
-          className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
-        >
-          Add Task
-        </button>
-        <TaskModal
-          isOpen={isModalOpen}
-          onOpenChange={setModalOpen}
-          editingTask={editingTask}
-          onSubmit={handleSubmit}
-          projects={[]} // Fetch & pass projects if required
-        />
-      </div>
-    );
-  }
-
+  // If there are tasks, display them in a list
   return (
     <div className="flex flex-col gap-4 px-6 mt-18">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl">Upcoming</h2>
+        <h2 className="text-2xl">Inbox</h2>
         <button
           onClick={openAddTaskModal}
           className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
@@ -130,9 +136,9 @@ const Page = () => {
       <ul className="space-y-4">
         {tasks.map((task) => (
           <TaskComponent
-            key={task.id}
             task={task}
             openEditTaskModal={openEditTaskModal}
+            key={task.id}
           />
         ))}
       </ul>
@@ -141,7 +147,7 @@ const Page = () => {
         onOpenChange={setModalOpen}
         editingTask={editingTask}
         onSubmit={handleSubmit}
-        projects={[]} // Fetch & pass projects as needed
+        projects={projects}
       />
     </div>
   );

@@ -18,15 +18,52 @@ export const signIn = async (email: string, password: string) => {
   }
 };
 
+
 export const signUp = async (name: string, email: string, password: string) => {
   try {
-    await auth.api.signUpEmail({
+    const res = await auth.api.signUpEmail({
       body: { email, password, name },
     });
+
+    const user = res?.user;
+
+    if (!user?.id) {
+      console.error("User creation failed, response was:", res);
+      throw new Error("User creation failed");
+    }
+
+    try {
+      // ✅ Try to create Knock user
+      const knockRes = await fetch(`https://api.knock.app/v1/users/${user.id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${process.env.KNOCK_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: user.email,
+          name: user.name || "User",
+        }),
+      });
+
+      if (!knockRes.ok && knockRes.status !== 422) {
+        const errorText = await knockRes.text();
+        console.error("Knock user creation failed:", errorText);
+        throw new Error("Knock user creation failed");
+      }
+
+    } catch (knockError) {
+      console.warn("Knock user might already exist or failed to create:", knockError);
+      // Continue anyway if it's a 422
+    }
+
+    return user;
   } catch (error) {
-    throw new Error("Failed to Sign up")
+    console.error("Signup or Knock user creation failed:", error);
+    throw new Error("Failed to Sign up");
   }
 };
+
 
 export const signOut = async () => {
   try {

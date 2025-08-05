@@ -16,7 +16,7 @@ const ThemeToggle = () => {
 
     return (
         <Button
-            className=" mmin-w-10 mmin-h-10"
+            className="min-w-10 min-h-10"
             variant="outline"
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
         >

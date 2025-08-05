@@ -26,6 +26,7 @@ import { useSearchParams } from "next/navigation";
 import GlobalSearch from "./Globalsearch";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "nextjs-toploader/app";
+import Notificationdropdown from "./Notificationdropdown";
 
 /* Root provider --------------------------------------------------------- */
 export default function ClientProvider({ children }: { children: ReactNode }) {
@@ -153,6 +154,7 @@ export function LayoutWithSidebar({ children }: { children: ReactNode }) {
 
       {/* Theme toggle (top-right) */}
       <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+        <Notificationdropdown />
         <ThemeToggle />
       </div>
 

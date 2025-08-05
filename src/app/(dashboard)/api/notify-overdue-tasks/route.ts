@@ -1,7 +1,7 @@
 // app/api/notify-overdue-tasks/route.ts
 import { NextResponse } from "next/server";
 import { db } from "@/db/drizzle";
-import { tasks} from "@/db/schema";
+import { tasks } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { Knock } from "@knocklabs/node";
 
@@ -36,8 +36,10 @@ export async function GET() {
       await knockClient.workflows.trigger("task-overdue", {
         recipients: [task.userId], // assuming you used userId as Knock user_id
         data: {
-          taskTitle: task.title,
-          dueDate: task.dueDate?.toISOString(),
+          task: {
+            title: task.title,
+            dueDate: task.dueDate?.toISOString(),
+          },
         },
       });
 

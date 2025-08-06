@@ -106,7 +106,7 @@ const Page = () => {
         <p>Add a task to get started with your day!</p>
         <button
           onClick={openAddTaskModal}
-          className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
+          className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 rounded-md text-sm px-4"
         >
           Add Task
         </button>

@@ -128,7 +128,7 @@ const Page = () => {
         <h2 className="text-2xl">Inbox</h2>
         <button
           onClick={openAddTaskModal}
-          className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm px-4"
+          className="w-22 h-8 bg-emerald-500 hover:bg-emerald-600 rounded-md text-sm px-4"
         >
           Add Task
         </button>

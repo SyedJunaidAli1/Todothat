@@ -11,6 +11,7 @@ import {
 import "@knocklabs/react/dist/index.css";
 import { authClient } from "@/lib/auth-client"; // adjust path if needed
 import { Button } from "@/components/ui/button";
+import { Bell } from "lucide-react";
 
 const Notificationdropdown = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -46,17 +47,20 @@ const Notificationdropdown = () => {
         feedId={process.env.NEXT_PUBLIC_KNOCK_FEED_ID!}
       >
         <>
-          <Button>
-            <NotificationIconButton
+          <div>
+            <Button
+              className="min-w-10 min-h-10"
               ref={notifButtonRef}
               onClick={() => setIsVisible(!isVisible)}
-            />
+            >
+              <Bell />
+            </Button>
             <NotificationFeedPopover
               buttonRef={notifButtonRef}
               isVisible={isVisible}
               onClose={() => setIsVisible(false)}
             />
-          </Button>
+          </div>
         </>
       </KnockFeedProvider>
     </KnockProvider>

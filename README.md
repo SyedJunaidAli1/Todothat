@@ -35,7 +35,6 @@
 - [x] for indepentend routes attach dashboard component in the layout
 - [x] Todo save with timezone
 - [x] display time in localtime zone of the user
-- [] Todo set timer for notify
 - [x] set knock for notifications
 - [x] Todo notify by email
 - [x] learn about tanstack query
@@ -45,6 +44,11 @@
 - [] Google authentication
 - [x] rdbms relations sql drizzle
 - [x] For knock i have to create a knock user
+- [] trigger.dev for automaticlly email sent
+- [] make own notification feed for color scheme
+- [] fix filteration for tasks projects are showing in inbox,today etc 
+- [] Project name is not showing in task component 
+- [] add a field in tasks for notificationsent spam
 
 #not working bc of layout changes
 

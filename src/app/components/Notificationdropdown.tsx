@@ -3,11 +3,10 @@ import { useEffect, useState, useRef } from "react";
 import {
   KnockProvider,
   KnockFeedProvider,
-  NotificationIconButton,
   NotificationFeedPopover,
   Spinner,
+  NotificationIconButton,
 } from "@knocklabs/react";
-
 import "@knocklabs/react/dist/index.css";
 import { authClient } from "@/lib/auth-client"; // adjust path if needed
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,6 @@ const Notificationdropdown = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      // const session = await authClient.getSession();
       const { data: session } = await authClient.getSession();
       if (session?.user?.id) {
         setUserId(session.user.id);
@@ -46,22 +44,18 @@ const Notificationdropdown = () => {
         colorMode="dark"
         feedId={process.env.NEXT_PUBLIC_KNOCK_FEED_ID!}
       >
-        <>
-          <div>
-            <Button
-              className="min-w-10 min-h-10"
-              ref={notifButtonRef}
-              onClick={() => setIsVisible(!isVisible)}
-            >
-              <Bell />
-            </Button>
-            <NotificationFeedPopover
-              buttonRef={notifButtonRef}
-              isVisible={isVisible}
-              onClose={() => setIsVisible(false)}
-            />
-          </div>
-        </>
+        <NotificationIconButton
+          ref={notifButtonRef}
+          onClick={() => setIsVisible(!isVisible)}
+        />
+        {/* <Button className="min-w-10 min-h-10">
+          <Bell />
+        </Button> */}
+        <NotificationFeedPopover
+          buttonRef={notifButtonRef}
+          isVisible={isVisible}
+          onClose={() => setIsVisible(false)}
+        />
       </KnockFeedProvider>
     </KnockProvider>
   );

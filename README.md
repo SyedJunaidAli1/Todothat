@@ -44,7 +44,7 @@
 - [] Google authentication
 - [x] rdbms relations sql drizzle
 - [x] For knock i have to create a knock user
-- [] trigger.dev for automaticlly email sent
+- [x] trigger.dev for automaticlly email sent
 - [] make own notification feed for color scheme
 - [] fix filteration for tasks projects are showing in inbox,today etc 
 - [] Project name is not showing in task component 

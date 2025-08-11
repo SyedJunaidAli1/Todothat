@@ -134,7 +134,9 @@ const TaskComponent = ({
                 <span className="text-red-500 ml-2">(Overdue)</span>
               )}
             </p>
-            <p className="text-sm">Project: {task.project}</p>
+            <p className="text-sm opacity-80">
+              Project: {task.projectName ? task.projectName : "Inbox"}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">

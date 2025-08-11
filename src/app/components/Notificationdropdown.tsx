@@ -85,6 +85,20 @@ const CustomNotificationFeed = ({ onClose }: { onClose: () => void }) => {
   const metadata = useFeedStore((state) => state.metadata);
   const loading = useFeedStore((state) => state.loading);
 
+  // Explicitly fetch on mount to handle refreshes
+  useEffect(() => {
+    const fetchFeed = async () => {
+      try {
+        await feedClient.fetch(); // Fetches the latest feed items
+      } catch (error) {
+        console.error("Error fetching feed:", error);
+      }
+    };
+    fetchFeed();
+  }, [feedClient]); // Runs once on mount
+
+  useEffect(() => {}, [items]);
+
   const handleMarkAllAsRead = () => feedClient.markAllAsRead();
   const handleMarkAsRead = (notification: FeedItem, e: React.MouseEvent) => {
     e.stopPropagation();

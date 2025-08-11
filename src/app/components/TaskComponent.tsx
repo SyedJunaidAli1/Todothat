@@ -26,7 +26,6 @@ const TaskComponent = ({
 }) => {
   const queryClient = useQueryClient();
   const [isOverdue, setIsOverdue] = useState(() => {
-  
     const dueDate = task.dueDate;
     const currentTime = new Date();
     if (!dueDate) return false;
@@ -48,9 +47,9 @@ const TaskComponent = ({
     try {
       const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const zonedDate = toZonedTime(dueDate, userTimezone);
-      return format(zonedDate, "HH:mm") + " (" + userTimezone + ")";
+      return format(zonedDate, "dd MMMM yy, HH:mm") + " (" + userTimezone + ")";
     } catch (e) {
-      return format(dueDate, "HH:mm") + " (UTC)";
+      return format(dueDate, "dd MMMM yy, HH:mm") + " (UTC)";
     }
   };
 

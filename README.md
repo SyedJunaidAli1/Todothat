@@ -40,12 +40,12 @@
 - [x] learn about tanstack query
 - [x] drizzle default now with timezone
 - [x] Store timezone tasks (new Date()).toISOString()
-- [] change task project field from text to unique id
+- [] change task project field from text to unique id (will see)
 - [] Google authentication
 - [x] rdbms relations sql drizzle
 - [x] For knock i have to create a knock user
 - [x] trigger.dev for automaticlly email sent
-- [] make own notification feed for color scheme
+- [x] make own notification feed for color scheme
 - [] fix filteration for tasks projects are showing in inbox,today etc 
 - [x] Project name is not showing in task component 
 - [] in search bar add task and add project not working a bug

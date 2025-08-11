@@ -8,6 +8,7 @@
         "@better-auth/client": "^0.0.2-alpha.3",
         "@dicebear/collection": "^9.2.3",
         "@dicebear/core": "^9.2.3",
+        "@knocklabs/client": "^0.16.3",
         "@knocklabs/node": "^1.11.2",
         "@knocklabs/react": "^0.7.31",
         "@neondatabase/serverless": "^1.0.1",

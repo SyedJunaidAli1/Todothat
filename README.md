@@ -48,7 +48,7 @@
 - [x] make own notification feed for color scheme
 - [] fix filteration for tasks projects are showing in inbox,today etc 
 - [x] Project name is not showing in task component 
-- [] in search bar add task and add project not working a bug
+- [x] in search bar add task and add project not working a bug
 - [] add a field in tasks for notificationsent spam
 
 #not working bc of layout changes

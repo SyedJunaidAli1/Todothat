@@ -79,10 +79,10 @@ const GlobalSearch = forwardRef<{ open: () => void }, {}>((_, ref) => {
         <CommandSeparator />
 
         <CommandGroup heading="Actions">
-          <CommandItem onSelect={() => go("/?modal=add-task")}>
+          <CommandItem onSelect={() => go("/dashboard/?modal=add-task")}>
             <CirclePlus className="mr-2 h-4 w-4" /> Add Task
           </CommandItem>
-          <CommandItem onSelect={() => go("/?modal=add-project")}>
+          <CommandItem onSelect={() => go("/dashboard/?modal=add-project")}>
             <Folder className="mr-2 h-4 w-4" /> Add Project
           </CommandItem>
         </CommandGroup>

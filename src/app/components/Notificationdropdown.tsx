@@ -11,31 +11,32 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-} from "@/components/ui/dropdown-menu"; // Adjust path to your Shadcn components
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Bell, Check, CheckCheck, X } from "lucide-react";
-import { authClient } from "@/lib/auth-client"; // Adjust path
+import { Bell } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 import { FeedItem } from "@knocklabs/client";
 
-// Helper to sanitize HTML (implement or import your own)
-const sanitizeHtml = (html: string) => html; // Placeholder; use DOMPurify in production
+const FILTERS = ["All", "Unread", "Read"] as const;
+type FilterType = (typeof FILTERS)[number];
+
+const sanitizeHtml = (html: string) => html; // Replace with a sanitizer in production
 
 const NotificationDropdown = () => {
-  const { theme } = useTheme(); // For dark/light mode
+  const { theme } = useTheme();
   const [userId, setUserId] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    async function fetchUser() {
       const { data: session } = await authClient.getSession();
-      if (session?.user?.id) {
-        setUserId(session.user.id);
-      }
-    };
+      if (session?.user?.id) setUserId(session.user.id);
+    }
     fetchUser();
   }, []);
 
-  if (!userId) return <div>Loading...</div>; // Or your Spinner
+  if (!userId)
+    return <div className="p-4 text-muted-foreground">Loading...</div>;
 
   return (
     <KnockProvider
@@ -44,21 +45,25 @@ const NotificationDropdown = () => {
     >
       <KnockFeedProvider
         feedId={process.env.NEXT_PUBLIC_KNOCK_FEED_ID!}
-        colorMode={theme as "light" | "dark" | undefined} // Sync with next-themes
+        colorMode={theme as "light" | "dark"}
       >
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative"
+              aria-label="Open notifications"
+            >
               <Bell className="h-5 w-5" />
-              {/* Unread badge */}
-              <CustomUnreadBadge />
+              <UnreadBadge />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-80 p-0 bg-background border-border shadow-lg"
+            className="w-96 p-0 bg-background border-border shadow-lg"
           >
-            <CustomNotificationFeed onClose={() => setIsOpen(false)} />
+            <CustomNotificationFeed />
           </DropdownMenuContent>
         </DropdownMenu>
       </KnockFeedProvider>
@@ -66,127 +71,137 @@ const NotificationDropdown = () => {
   );
 };
 
-// Custom unread badge component
-const CustomUnreadBadge = () => {
+const UnreadBadge = () => {
   const { useFeedStore } = useKnockFeed();
   const metadata = useFeedStore((state) => state.metadata);
-  if (metadata?.unread_count === 0) return null;
+  if (!metadata?.unread_count) return null;
   return (
-    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">
+    <span className="absolute -top-1 -right-1 bg-flame-500 text-white text-xs px-2 py-0.5 rounded-full">
       {metadata.unread_count}
     </span>
   );
 };
 
-// Custom feed implementation (simplified without avatars or animations)
-const CustomNotificationFeed = ({ onClose }: { onClose: () => void }) => {
+const CustomNotificationFeed = () => {
   const { useFeedStore, feedClient } = useKnockFeed();
   const items = useFeedStore((state) => state.items);
-  const metadata = useFeedStore((state) => state.metadata);
   const loading = useFeedStore((state) => state.loading);
 
-  // Explicitly fetch on mount to handle refreshes
-  useEffect(() => {
-    const fetchFeed = async () => {
-      try {
-        await feedClient.fetch(); // Fetches the latest feed items
-      } catch (error) {
-        console.error("Error fetching feed:", error);
-      }
-    };
-    fetchFeed();
-  }, [feedClient]); // Runs once on mount
+  const [filter, setFilter] = useState<FilterType>("All");
 
-  useEffect(() => {}, [items]);
+  useEffect(() => {
+    feedClient.fetch(); // Ensures notifications persist after refresh
+  }, [feedClient]);
 
   const handleMarkAllAsRead = () => feedClient.markAllAsRead();
-  const handleMarkAsRead = (notification: FeedItem, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleMarkAsRead = (notification: FeedItem) =>
     feedClient.markAsRead([notification]);
-  };
-  const handleDismiss = (notification: FeedItem, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleDismiss = (notification: FeedItem) =>
     feedClient.markAsArchived([notification]);
-  };
 
-  const getNotificationContent = (notification: FeedItem) => {
-    const firstBlock = notification.blocks?.[0];
-    if (!firstBlock) return "No content";
-    return sanitizeHtml(
-      firstBlock.rendered || firstBlock.content || "No content"
-    );
-  };
-
-  if (loading) return <div className="p-4">Loading notifications...</div>; // Customize skeleton if needed
-
+  if (loading) return <div className="p-4">Loading notifications...</div>;
   if (!items || items.length === 0)
     return (
-      <div className="p-4 text-center text-muted-foreground">
+      <div className="p-8 text-center text-muted-foreground">
         No notifications yet.
       </div>
     );
 
-  return (
-    <div className="flex flex-col">
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <h3 className="font-semibold">Notifications</h3>
-        {metadata?.unread_count > 0 && (
-          <Button variant="outline" size="sm" onClick={handleMarkAllAsRead}>
-            <CheckCheck className="h-4 w-4 mr-1" />
-            Mark all read
-          </Button>
-        )}
-      </div>
-      <div className="max-h-96 overflow-y-auto divide-y divide-border">
-        {items.map((notification) => {
-          const content = getNotificationContent(notification);
-          const isUnread = !notification.read_at;
+  let filteredItems = items;
+  if (filter === "Unread")
+    filteredItems = items.filter((item) => !item.read_at);
+  else if (filter === "Read")
+    filteredItems = items.filter((item) => item.read_at);
 
-          return (
-            <div
-              key={notification.id}
-              className={`p-4 hover:bg-accent transition ${isUnread ? "bg-accent/20" : "opacity-75"}`}
-              onClick={() => {
-                feedClient.markAsRead([notification]);
-                onClose();
-              }}
+  const renderNotification = (notification: FeedItem, isUnread: boolean) => {
+    const firstBlock = notification.blocks?.[0];
+    let content = "No content";
+    if (firstBlock) {
+      if ("rendered" in firstBlock && typeof firstBlock.rendered === "string")
+        content = firstBlock.rendered;
+      else if (
+        "content" in firstBlock &&
+        typeof firstBlock.content === "string"
+      )
+        content = firstBlock.content;
+    }
+    return (
+      <div
+        key={notification.id}
+        className={`p-4 transition ${isUnread ? "bg-accent/20" : "bg-background opacity-70"} hover:bg-accent/40`}
+      >
+        <div className="flex justify-between items-center">
+          <p className="font-medium">Task Overdue</p>
+          <span className="text-xs text-muted-foreground">
+            {formatDistanceToNow(new Date(notification.inserted_at), {
+              addSuffix: true,
+            })}
+          </span>
+        </div>
+        <div
+          className="mt-1 text-sm text-muted-foreground"
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
+        />
+        <div className="flex gap-2 mt-2">
+          {isUnread && (
+            <button
+              className="text-xs underline"
+              type="button"
+              onClick={() => handleMarkAsRead(notification)}
             >
-              <div className="flex-1">
-                <div className="flex justify-between">
-                  <p className="font-medium">Notification</p>{" "}
-                  {/* Customize sender name if needed */}
-                  <p className="text-sm text-muted-foreground">
-                    {formatDistanceToNow(new Date(notification.inserted_at), {
-                      addSuffix: true,
-                    })}
-                  </p>
-                </div>
-                <div
-                  dangerouslySetInnerHTML={{ __html: content }}
-                  className="text-sm"
-                />
-              </div>
-              <div className="flex gap-2 mt-2">
-                {isUnread && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={(e) => handleMarkAsRead(notification, e)}
-                  >
-                    <Check className="h-4 w-4" />
-                  </Button>
-                )}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={(e) => handleDismiss(notification, e)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          );
-        })}
+              Mark as read
+            </button>
+          )}
+          <button
+            className="text-xs underline text-muted-foreground"
+            type="button"
+            onClick={() => handleDismiss(notification)}
+          >
+            Dismiss
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      {/* Header row with filter tabs and mark all as read */}
+      <div className="flex items-center justify-between p-4 border-b border-border bg-background">
+        <div className="flex gap-4">
+          {FILTERS.map((f) => (
+            <button
+              key={f}
+              type="button"
+              onClick={() => setFilter(f)}
+              className={`font-semibold text-sm ${
+                filter === f
+                  ? "text-flame-500 border-b-2 border-flame-500 pb-1"
+                  : "text-muted-foreground"
+              }`}
+              style={{ background: "none", border: "none" }}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+        <button
+          className="text-xs underline text-flame-500"
+          type="button"
+          onClick={handleMarkAllAsRead}
+        >
+          Mark all as read
+        </button>
+      </div>
+      {/* Notifications list */}
+      <div>
+        {filteredItems.length > 0 ? (
+          filteredItems.map((noti) => renderNotification(noti, !noti.read_at))
+        ) : (
+          <div className="p-8 text-center text-muted-foreground">
+            No {filter.toLowerCase()} notifications.
+          </div>
+        )}
       </div>
     </div>
   );

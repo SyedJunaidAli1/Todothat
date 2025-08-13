@@ -49,7 +49,8 @@
 - [] fix filteration for tasks projects are showing in inbox,today etc 
 - [x] Project name is not showing in task component 
 - [x] in search bar add task and add project not working a bug
-- [] add a field in tasks for notificationsent spam
+- [x] add a field in tasks for notificationsent spam
+- [] change add task modal time,calender and dropdown with shad component
 
 #not working bc of layout changes
 

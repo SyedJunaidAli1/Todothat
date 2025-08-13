@@ -15,67 +15,8 @@ export interface Task {
   userId: string;
   createdAt: Date;
   completed: boolean;
+  overdueNotified: boolean;
 }
-
-// export async function getTasks(
-//   project?: string,
-//   dueDate?: Date,
-//   dueAfter?: Date,
-//   completed?: boolean
-// ): Promise<Task[]> {
-//   const requestHeaders = await headers();
-//   const session = await auth.api.getSession({ headers: requestHeaders });
-
-//   if (!session || !session.user || !session.user.id) {
-//     throw new Error("Unauthorized");
-//   }
-
-//   let query = db
-//     .select()
-//     .from(tasks)
-//     .where(
-//       and(
-//         eq(tasks.userId, session.user.id),
-//         project ? eq(tasks.projectId, project) : sql`TRUE`,
-//         completed !== undefined ? eq(tasks.completed, completed) : sql`TRUE`
-//       )
-//     );
-
-//   if (dueDate) {
-//     const startOfDay = new Date(dueDate);
-//     startOfDay.setHours(0, 0, 0, 0);
-//     const endOfDay = new Date(dueDate);
-//     endOfDay.setHours(23, 59, 59, 999);
-
-//     query = query.where(
-//       and(
-//         eq(tasks.userId, session.user.id),
-//         project ? eq(tasks.projectId, project) : sql`TRUE`,
-//         completed !== undefined ? eq(tasks.completed, completed) : sql`TRUE`,
-//         sql`${tasks.dueDate} >= ${startOfDay.toISOString()}`,
-//         sql`${tasks.dueDate} <= ${endOfDay.toISOString()}`
-//       )
-//     );
-//   }
-
-//   if (dueAfter) {
-//     const endOfDay = new Date(dueAfter);
-//     endOfDay.setHours(23, 59, 59, 999);
-
-//     query = query.where(
-//       and(
-//         eq(tasks.userId, session.user.id),
-//         project ? eq(tasks.project, project) : sql`TRUE`,
-//         completed !== undefined ? eq(tasks.completed, completed) : sql`TRUE`,
-//         sql`${tasks.dueDate} > ${endOfDay.toISOString()}`
-//       )
-//     );
-//   }
-
-//   const result = await query;
-//   return result;
-// }
-
 
 export async function getTasks(
   project?: string,
@@ -170,6 +111,7 @@ export async function createTask(
   });
 }
 
+
 export async function updateTask(
   taskId: number,
   title: string,
@@ -181,26 +123,32 @@ export async function updateTask(
   const requestHeaders = await headers();
   const session = await auth.api.getSession({ headers: requestHeaders });
 
-  if (!session || !session.user || !session.user.id) {
+  if (!session || !session.user?.id) {
     throw new Error("Unauthorized");
   }
+
+  const now = new Date();
+  const newDue = dueDate ?? null;
+
+  // Reset the notification flag when task is no longer overdue
+  const dueMovedToFuture = newDue !== null && newDue > now;
+  const dueCleared = newDue === null;
+  const markedComplete = completed === true;
+
+  const shouldResetOverdueFlag =
+    dueMovedToFuture || dueCleared || markedComplete;
 
   await db
     .update(tasks)
     .set({
       title,
       description,
-      dueDate,
+      dueDate: newDue,
       projectId,
       completed,
-      updatedAt: new Date(),
+      ...(shouldResetOverdueFlag ? { overdueNotified: false } : {}),
     })
-    .where(
-      and(
-        eq(tasks.id, taskId),
-        eq(tasks.userId, session.user.id)
-      )
-    );
+    .where(and(eq(tasks.id, taskId), eq(tasks.userId, session.user.id)));
 }
 
 export async function deleteTask(taskId: number) {

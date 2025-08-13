@@ -59,6 +59,7 @@ export const tasks = pgTable("tasks", {
   projectId: text("project_id").references(() => projects.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   completed: boolean("completed").default(false).notNull(),
+  overdueNotified: boolean("overdue_notified").default(false).notNull()
 });
 
 

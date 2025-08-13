@@ -1,53 +1,81 @@
-// app/api/notify-overdue-tasks/route.ts
 import { NextResponse } from "next/server";
 import { db } from "@/db/drizzle";
 import { tasks } from "@/db/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { and, eq, isNotNull, lt, inArray } from "drizzle-orm";
 import { Knock } from "@knocklabs/node";
 
-// Initialize Knock
+export const dynamic = "force-dynamic";
+
 const knockClient = new Knock(process.env.KNOCK_API_KEY!);
 
 export async function GET() {
-  const now = new Date();
+  try {
+    const now = new Date();
 
-  // Get all tasks that are overdue and not completed
-  const overdueTasks = await db
-    .select({
-      id: tasks.id,
-      title: tasks.title,
-      dueDate: tasks.dueDate,
-      userId: tasks.userId,
-    })
-    .from(tasks)
-    .where(
-      and(
-        sql`${tasks.dueDate} IS NOT NULL`,
-        sql`${tasks.dueDate} < ${now.toISOString()}`,
-        eq(tasks.completed, false)
+    // Only pick tasks that are: have a due date, are now overdue, not completed, and NOT notified yet
+    const overdueTasks = await db
+      .select({
+        id: tasks.id,
+        title: tasks.title,
+        dueDate: tasks.dueDate,
+        userId: tasks.userId,
+      })
+      .from(tasks)
+      .where(
+        and(
+          isNotNull(tasks.dueDate),
+          lt(tasks.dueDate, now),
+          eq(tasks.completed, false),
+          eq(tasks.overdueNotified, false)
+        )
+      );
+
+    if (overdueTasks.length === 0) {
+      return NextResponse.json({ status: "ok", notified: 0, failures: 0, taskIds: [] });
+    }
+
+    // Send notifications
+    const results = await Promise.allSettled(
+      overdueTasks.map((t) =>
+        knockClient.workflows.trigger("task-overdue", {
+          recipients: [t.userId],
+          data: {
+            task: {
+              id: t.id,
+              title: t.title,
+              dueDate: t.dueDate?.toISOString(),
+            },
+          },
+        })
       )
     );
 
-  let count = 0;
+    // Mark only successful ones as notified
+    const successIds: number[] = [];
+    const failed: { id: number; reason: string }[] = [];
 
-  // Loop through and notify each task’s user
-  for (const task of overdueTasks) {
-    try {
-      await knockClient.workflows.trigger("task-overdue", {
-        recipients: [task.userId], // assuming you used userId as Knock user_id
-        data: {
-          task: {
-            title: task.title,
-            dueDate: task.dueDate?.toISOString(),
-          },
-        },
-      });
+    results.forEach((r, i) => {
+      const t = overdueTasks[i];
+      if (r.status === "fulfilled") successIds.push(t.id);
+      else failed.push({ id: t.id, reason: String(r.reason) });
+    });
 
-      count++;
-    } catch (err) {
-      console.error(`Failed to send Knock notification for task ${task.id}:`, err);
+    if (successIds.length > 0) {
+      await db
+        .update(tasks)
+        .set({ overdueNotified: true })
+        .where(inArray(tasks.id, successIds));
     }
-  }
 
-  return NextResponse.json({ status: "done", notified: count });
+    return NextResponse.json({
+      status: "ok",
+      notified: successIds.length,
+      failures: failed.length,
+      taskIds: successIds,
+      failed,
+    });
+  } catch (err) {
+    console.error("notify-overdue-tasks error:", err);
+    return NextResponse.json({ status: "error" }, { status: 500 });
+  }
 }

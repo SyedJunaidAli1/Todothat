@@ -51,6 +51,8 @@
 - [x] in search bar add task and add project not working a bug
 - [x] add a field in tasks for notificationsent spam
 - [x] change add task modal time,calender and dropdown with shad component
+- [] minor changes for time make them a one block
+- [x] Changes Made for emails
 
 #not working bc of layout changes
 

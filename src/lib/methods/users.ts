@@ -82,7 +82,7 @@ export const sendVerify = async (email: string) => {
   try {
     await authClient.sendVerificationEmail({
       email: email,
-      callbackURL: "/", // The redirect URL after verification
+      callbackURL: "/dashboard", // The redirect URL after verification
     });
     return { success: true, message: "Verification email sent successfully" };
   } catch (error: any) {

@@ -61,7 +61,7 @@ function AppSidebar({
                 expanded ? "w-32" : "w-0"
               }`}
             >
-              <Link href={"/"}>Todothat</Link>
+              <Link href={"/dashboard"}>Todothat</Link>
             </h1>
             <button
               onClick={() => setExpanded((c) => !c)}

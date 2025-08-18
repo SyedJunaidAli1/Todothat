@@ -53,6 +53,8 @@
 - [x] change add task modal time,calender and dropdown with shad component
 - [] minor changes for time make them a one block
 - [x] Changes Made for emails
+- [] fix issue of deployment
+- [x] move trigger.dev fnc to production
 
 #not working bc of layout changes
 

@@ -1,4 +1,5 @@
-"use client";
+"use client"; 
+import { Suspense } from "react"; 
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -6,11 +7,14 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "nextjs-toploader/app";
 import { resetPassword } from "@/lib/methods/users";
 
-
-export default function Page() {
+function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const router = useRouter();
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   if (!token) {
     return (
@@ -19,11 +23,6 @@ export default function Page() {
       </div>
     );
   }
-
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,5 +83,15 @@ export default function Page() {
         <p className="text-center text-sm text-emerald-500">{message}</p>
       )}
     </form>
+  );
+}
+
+// Parent page component
+export default function Page() {
+  return (
+    // Wrap the dynamic child in Suspense (you can add a fallback like a loading spinner if desired)
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }

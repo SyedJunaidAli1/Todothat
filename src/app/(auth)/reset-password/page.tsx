@@ -3,8 +3,9 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth-client";
 import { useRouter } from "nextjs-toploader/app";
+import { resetPassword } from "@/lib/methods/users";
+
 
 export default function Page() {
   const searchParams = useSearchParams();
@@ -36,21 +37,18 @@ export default function Page() {
     setMessage("");
 
     try {
-      const { data, error } = await authClient.resetPassword({
-        newPassword: password,
-        token,
-      });
-
-      if (error) {
-        setMessage(error.message || "Failed to reset password");
-      } else {
+      // Call the server action instead of authClient
+      const result = await resetPassword(password, token);
+      if (result.success) {
         setMessage("Password updated! You can now sign in.");
         setTimeout(() => {
           router.push("/signin");
         }, 3000);
+      } else {
+        setMessage("Failed to reset password");
       }
-    } catch (err) {
-      setMessage("Something went wrong. Try again.");
+    } catch (err: any) {
+      setMessage(err.message || "Something went wrong. Try again.");
     } finally {
       setIsLoading(false);
     }

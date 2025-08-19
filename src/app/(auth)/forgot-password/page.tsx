@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import Image from "next/image";
 import { useState } from "react";
 
 export default function ForgotPasswordPage() {
@@ -36,10 +37,13 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen flex">
       {/* Left image panel */}
       <div className="hidden md:flex w-1/2 bg-emerald-500 items-center justify-center">
-        <img
+        <Image
           src="/auth-illustration.png"
           alt="Forgot Password Illustration"
-          className="w-3/4 max-w-md"
+          width={900}
+          height={900}
+          className="object-contain"
+          priority
         />
       </div>
 

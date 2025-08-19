@@ -90,3 +90,19 @@ export const sendVerify = async (email: string) => {
     throw new Error(error.message || "Failed to send verification email");
   }
 };
+
+export async function resetPassword(password: string, token: string) {
+  try {
+
+    const result: any = await auth.api.resetPassword({
+      body: {
+        newPassword: password,
+        token,
+      },
+    });
+    return { success: true, message: "Password Reset" };
+  } catch (error: any) {
+    console.error("resetPassword (Better Auth SDK) error:", error);
+    throw new Error(error.message || "Something went wrong. Try again.");
+  }
+}

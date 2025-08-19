@@ -3,7 +3,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTasks, Task, updateTask, createTask } from "@/lib/methods/tasks";
 import { toast } from "sonner";
 import { useState } from "react";
-
 import { getProjects } from "@/lib/methods/projects";
 import TaskComponent from "@/app/components/TaskComponent";
 import TaskModal from "@/app/components/TaskModal";

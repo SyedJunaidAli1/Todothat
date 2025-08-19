@@ -1,14 +1,9 @@
 "use client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getTasks, Task, deleteTask } from "@/lib/methods/tasks";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getTasks, Task } from "@/lib/methods/tasks";
 import { format } from "date-fns";
-import { toast } from "sonner";
 
-interface CompletedPageProps {
-  onEditTask: (task: Task) => void;
-}
-
-const Page = ({ onEditTask }: CompletedPageProps) => {
+const Page = () => {
   const queryClient = useQueryClient();
 
   // Fetch completed tasks using TanStack Query
@@ -19,18 +14,6 @@ const Page = ({ onEditTask }: CompletedPageProps) => {
   } = useQuery<Task[]>({
     queryKey: ["tasks", "Completed"],
     queryFn: () => getTasks(undefined, undefined, undefined, true), // Fetch all completed tasks
-  });
-
-  // Mutation for deleting a task
-  const deleteMutation = useMutation({
-    mutationFn: deleteTask,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", "Completed"] });
-      toast.success("Task deleted successfully!");
-    },
-    onError: (err: any) => {
-      toast.error(err.message || "Failed to delete task");
-    },
   });
 
   // Format due date for display
@@ -89,10 +72,10 @@ const Page = ({ onEditTask }: CompletedPageProps) => {
                   <p className="text-s">{task.description}</p>
                 )}
                 <p className="text-sm">Due: {formatDueDate(task.dueDate)}</p>
-                <p className="text-md">Project: {task.projectId}</p>
-              </div>
-              <div className="flex gap-2">
-                {/* Removed Edit and Delete buttons */}
+                <p className="text-md">
+                  {" "}
+                  Project: {task.projectName ? task.projectName : "Inbox"}
+                </p>
               </div>
             </div>
           </li>

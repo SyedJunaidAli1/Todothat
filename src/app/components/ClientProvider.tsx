@@ -8,10 +8,11 @@ import NextTopLoader from "nextjs-toploader";
 /* UI and modals */
 import AppSidebar from "@/app/components/AppSidebar";
 import TaskModal from "@/app/components/TaskModal";
-
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import ThemeToggle from "@/app/components/ThemeToggle";
+import { Button } from "@/components/ui/button";
+import Notificationdropdown from "./Notificationdropdown";
 
 /* Data helpers */
 import { createTask, updateTask, Task } from "@/lib/methods/tasks";
@@ -24,9 +25,8 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
 import GlobalSearch from "./Globalsearch";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "nextjs-toploader/app";
-import Notificationdropdown from "./Notificationdropdown";
+
 
 /* Root provider --------------------------------------------------------- */
 export default function ClientProvider({ children }: { children: ReactNode }) {

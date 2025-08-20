@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "../globals.css";
 import { LayoutWithSidebar } from "../components/ClientProvider";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Todothat",
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body cz-shortcut-listen="true">
-        <LayoutWithSidebar>{children}</LayoutWithSidebar>
+        <Suspense fallback={<div>Loading...</div>}>
+          <LayoutWithSidebar>{children}</LayoutWithSidebar>
+        </Suspense>
       </body>
     </html>
   );

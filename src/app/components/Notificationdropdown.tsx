@@ -76,7 +76,7 @@ const UnreadBadge = () => {
   const metadata = useFeedStore((state) => state.metadata);
   if (!metadata?.unread_count) return null;
   return (
-    <span className="absolute -top-1 -right-1 bg-flame-500 text-white text-xs px-2 py-0.5 rounded-full">
+    <span className="absolute -top-1 -right-1 bg-flame-500 text-xs px-2 py-0.5 rounded-full">
       {metadata.unread_count}
     </span>
   );

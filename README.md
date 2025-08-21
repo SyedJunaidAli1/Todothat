@@ -55,6 +55,7 @@
 - [x] Changes Made for emails
 - [x] fix issue of deployment
 - [x] move trigger.dev fnc to production
+- [x] password reset url for production is localhost3000 fix for it
 
 #not working bc of layout changes
 

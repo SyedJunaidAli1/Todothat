@@ -43,7 +43,7 @@ export async function GET() {
             task: {
               id: t.id,
               title: t.title,
-              dueDate: t.dueDate?.toLocaleString(),
+              dueDate: t.dueDate?.toLocaleTimeString(),
             },
           },
         })

@@ -12,9 +12,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuShortcut,
 } from "@/components/ui/dropdown-menu";
-import { sendVerify, signOut } from "@/lib/methods/users";
+import { sendVerify } from "@/lib/methods/users";
 import { useRouter } from "nextjs-toploader/app";
 import { toast } from "sonner"; // Assuming sonner is used for toasts
+import { authClient } from "@/lib/auth-client";
 
 const Profile = ({ expanded }: { expanded: boolean }) => {
   const { session } = useSession();
@@ -22,6 +23,16 @@ const Profile = ({ expanded }: { expanded: boolean }) => {
   const email = session?.user?.email ?? "guest@example.com";
   const [avatarSvg, setAvatarSvg] = useState("");
   const router = useRouter();
+
+  const signOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/signin"); // redirect to login page
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     if (!email) return;

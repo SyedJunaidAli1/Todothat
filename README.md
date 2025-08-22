@@ -56,6 +56,10 @@
 - [x] fix issue of deployment
 - [x] move trigger.dev fnc to production
 - [x] password reset url for production is localhost3000 fix for it
+- [] some mobile optimization
+- [x] knock email template changes
+- [x] signout btn push to sign page 
+- [] double sonner for task bug fix
 
 #not working bc of layout changes
 

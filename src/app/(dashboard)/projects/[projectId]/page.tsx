@@ -66,10 +66,8 @@ export default function ProjectPage() {
           projectId,
           editingTask.completed
         );
-        toast.success("Task updated!");
       } else {
         await createTask(title, description, dueDate ?? undefined, projectId);
-        toast.success("Task created!");
       }
 
       setModalOpen(false);

@@ -60,7 +60,6 @@ const Page = () => {
           projectId || "",
           editingTask.completed
         );
-        toast.success("Task updated!");
       } else {
         await createTask(
           title,
@@ -68,7 +67,6 @@ const Page = () => {
           dueDate ?? undefined,
           projectId || null
         );
-        toast.success("Task created!");
       }
       setModalOpen(false);
       await queryClient.invalidateQueries({ queryKey: ["tasks", "Today"] });

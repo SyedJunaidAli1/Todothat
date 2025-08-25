@@ -27,7 +27,6 @@ import { useSearchParams } from "next/navigation";
 import GlobalSearch from "./Globalsearch";
 import { useRouter } from "nextjs-toploader/app";
 
-
 /* Root provider --------------------------------------------------------- */
 export default function ClientProvider({ children }: { children: ReactNode }) {
   const [client] = useState(() => new QueryClient());
@@ -104,10 +103,8 @@ export function LayoutWithSidebar({ children }: { children: ReactNode }) {
         projectId,
         editingTask.completed
       );
-      toast.success("Task updated!");
     } else {
       await createTask(title, description, dueDate, projectId);
-      toast.success("Task created!");
     }
     setIsTaskModalOpen(false);
   };
@@ -215,4 +212,3 @@ export function LayoutWithSidebar({ children }: { children: ReactNode }) {
     </div>
   );
 }
-

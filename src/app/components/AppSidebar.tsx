@@ -65,7 +65,7 @@ function AppSidebar({
             </h1>
             <button
               onClick={() => setExpanded((c) => !c)}
-              className="p-1.5 rounded-lg text-black bg-gray-50 hover:bg-gray-300"
+              className="p-1.5 rounded-lg text-primary bg-gray-200 hover:bg-gray-300"
             >
               {expanded ? <ChevronFirst /> : <ChevronLast />}
             </button>

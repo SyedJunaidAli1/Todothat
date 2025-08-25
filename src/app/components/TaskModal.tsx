@@ -147,7 +147,7 @@ export default function TaskModal({
         projectId,
       });
       onOpenChange(false);
-      toast.success(editingTask ? "Task updated" : "Task added");
+      toast.success(editingTask ? "Task updated!" : "Task created!");
     } catch (err: any) {
       const msg = err?.message || "Failed to save task";
       setError(msg);

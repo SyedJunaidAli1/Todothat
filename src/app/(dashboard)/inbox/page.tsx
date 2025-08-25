@@ -7,7 +7,6 @@ import { getProjects } from "@/lib/methods/projects";
 import TaskComponent from "@/app/components/TaskComponent";
 import TaskModal from "@/app/components/TaskModal";
 
-
 const Page = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -99,7 +98,6 @@ const Page = () => {
           projectId || "",
           editingTask.completed
         );
-        toast.success("Task updated!");
       } else {
         // Creating a new task
         await createTask(
@@ -108,7 +106,6 @@ const Page = () => {
           dueDate ?? undefined,
           projectId || null
         );
-        toast.success("Task created!");
       }
 
       setModalOpen(false); // close modal

@@ -60,7 +60,7 @@
 - [x] knock email template changes
 - [x] signout btn push to sign page 
 - [x] double sonner for task bug fix
-- [] image issue fix in production
+- [x] image issue fix in production
 
 #not working bc of layout changes
 

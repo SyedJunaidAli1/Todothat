@@ -4,7 +4,6 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { getTasks, createTask, updateTask, Task } from "@/lib/methods/tasks";
 import { getProjects } from "@/lib/methods/projects";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import TaskComponent from "@/app/components/TaskComponent";
 import TaskModal from "@/app/components/TaskModal";
@@ -73,7 +72,7 @@ export default function ProjectPage() {
       setModalOpen(false);
       queryClient.invalidateQueries({ queryKey: ["tasks", projectId] });
     } catch (err: any) {
-      toast.error(err.message || "Something went wrong.");
+      throw new err
     }
   };
 

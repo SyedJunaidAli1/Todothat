@@ -1,7 +1,6 @@
 "use client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTasks, Task, updateTask, createTask } from "@/lib/methods/tasks";
-import { toast } from "sonner";
 import { useState } from "react";
 import TaskModal from "@/app/components/TaskModal"; // Replace path with your actual modal
 import TaskComponent from "@/app/components/TaskComponent";
@@ -69,7 +68,7 @@ const Page = () => {
       setModalOpen(false);
       await queryClient.invalidateQueries({ queryKey: ["tasks", "Upcoming"] });
     } catch (err: any) {
-      toast.error(err.message || "Something went wrong.");
+      throw new err
     }
   };
 

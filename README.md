@@ -46,8 +46,8 @@
 - [x] For knock i have to create a knock user
 - [x] trigger.dev for automaticlly email sent
 - [x] make own notification feed for color scheme
-- [] fix filteration for tasks projects are showing in inbox,today etc 
-- [x] Project name is not showing in task component 
+- [] fix filteration for tasks projects are showing in inbox,today etc
+- [x] Project name is not showing in task component
 - [x] in search bar add task and add project not working a bug
 - [x] add a field in tasks for notificationsent spam
 - [x] change add task modal time,calender and dropdown with shad component
@@ -58,9 +58,12 @@
 - [x] password reset url for production is localhost3000 fix for it
 - [] some mobile optimization
 - [x] knock email template changes
-- [x] signout btn push to sign page 
+- [x] signout btn push to sign page
 - [x] double sonner for task bug fix
 - [x] image issue fix in production
+- [] look in to Google Oauth issue
+- [x] terns and privacy policy tabs
+- [] noti icon active 
 
 #not working bc of layout changes
 

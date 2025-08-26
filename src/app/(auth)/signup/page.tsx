@@ -172,10 +172,10 @@ export default function Page() {
                   <p className="text-sm text-gray-500 text-center">
                     By creating an account you agree to our{" "}
                     <Link
-                      href="/term"
+                      href="/terms"
                       className="text-emerald-400 hover:underline"
                     >
-                      Term
+                      Terms & Conditions
                     </Link>
                     .
                   </p>

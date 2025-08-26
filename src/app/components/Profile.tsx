@@ -16,6 +16,7 @@ import { sendVerify } from "@/lib/methods/users";
 import { useRouter } from "nextjs-toploader/app";
 import { toast } from "sonner"; // Assuming sonner is used for toasts
 import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
 
 const Profile = ({ expanded }: { expanded: boolean }) => {
   const { session } = useSession();
@@ -73,8 +74,15 @@ const Profile = ({ expanded }: { expanded: boolean }) => {
           <DropdownMenuContent className="w-56" align="start">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>About</DropdownMenuItem>
-            <DropdownMenuItem>Privacy Police</DropdownMenuItem>
+            <Link href="/about">
+              <DropdownMenuItem>About</DropdownMenuItem>
+            </Link>
+            <Link href="/privacy">
+              <DropdownMenuItem>Privacy Police</DropdownMenuItem>
+            </Link>
+            <Link href="/terms">
+              <DropdownMenuItem>Terms & Conditions</DropdownMenuItem>
+            </Link>
             <DropdownMenuItem onClick={handleVerifyEmail}>
               Verify Email
             </DropdownMenuItem>

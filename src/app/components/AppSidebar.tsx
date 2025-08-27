@@ -16,6 +16,7 @@ import React, { createContext, useContext, useState, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Profile from "./Profile";
+import Image from "next/image";
 
 /* ---------- Context ---------- */
 const SidebarContext = createContext<{ expanded: boolean }>({ expanded: true });
@@ -61,7 +62,17 @@ function AppSidebar({
                 expanded ? "w-32" : "w-0"
               }`}
             >
-              <Link href={"/dashboard"}>Todothat</Link>
+              <Link href={"/dashboard"}>
+                <div className="flex items-center justify-center">
+                  <Image
+                    src="/todothat-logo-only.svg"
+                    alt="Auth illustration"
+                    width={35}
+                    height={35}
+                  />
+                  <span className=" font-bold">Todothat</span>
+                </div>
+              </Link>
             </h1>
             <button
               onClick={() => setExpanded((c) => !c)}
@@ -87,7 +98,6 @@ function AppSidebar({
                   icon={<InboxIcon />}
                   text="Inbox"
                   alert
-                  
                   active={activeLabel === "Inbox"}
                 />
               </span>

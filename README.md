@@ -64,6 +64,9 @@
 - [] look in to Google Oauth issue
 - [x] terns and privacy policy tabs
 - [] noti icon active 
+- [x] logo for the app
+- [x] ask for logo url for emails
+- [] email time is showing wrong
 
 #not working bc of layout changes
 

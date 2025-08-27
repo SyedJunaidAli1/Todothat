@@ -15,8 +15,8 @@ import * as React from "react";
 
 const logoImage =
   process.env.NODE_ENV === "production"
-    ? "https://halycron.space/logo_dark.png"
-    : "http://localhost:3000/logo_dark.png"; // For local development
+    ? "https://www.todothat.space/todothat-logo.svg"
+    : "http://localhost:3000/todothat-logo.svg"; // For local development
 
 interface ResetPasswordEmailProps {
   url: string;
@@ -41,7 +41,7 @@ export const ResetPasswordEmail = ({
         <Container style={container}>
           {/* Header */}
           <Section style={headerSection}>
-            {/* <Img src={logoUrl} width="140" alt={appName} style={logo} /> */}
+            <Img src={logoUrl} width="140" alt={appName} style={logo} />
           </Section>
 
           {/* Content card */}
@@ -71,7 +71,10 @@ export const ResetPasswordEmail = ({
 
             <Section style={linkContainer}>
               <Text style={linkText}>
-                <Link href={url} style={{ color: "inherit", textDecoration: "none" }}>
+                <Link
+                  href={url}
+                  style={{ color: "inherit", textDecoration: "none" }}
+                >
                   {url}
                 </Link>
               </Text>
@@ -80,7 +83,8 @@ export const ResetPasswordEmail = ({
             <Hr style={divider} />
 
             <Text style={footerText}>
-              ⏰ For security, this reset link expires in <strong>Few minutes</strong>.
+              ⏰ For security, this reset link expires in{" "}
+              <strong>Few minutes</strong>.
             </Text>
 
             <Text style={footerText}>
@@ -98,7 +102,9 @@ export const ResetPasswordEmail = ({
 
           {/* Bottom branding */}
           <Section style={brandingFooter}>
-            <Text style={brandingText}>Organize • Prioritize • Get things done</Text>
+            <Text style={brandingText}>
+              Organize • Prioritize • Get things done
+            </Text>
           </Section>
         </Container>
       </Body>

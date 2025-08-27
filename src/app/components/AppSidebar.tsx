@@ -66,7 +66,7 @@ function AppSidebar({
                 <div className="flex items-center justify-center">
                   <Image
                     src="/todothat-logo-only.svg"
-                    alt="Auth illustration"
+                    alt="logo"
                     width={35}
                     height={35}
                   />

@@ -15,8 +15,8 @@ import * as React from "react";
 
 const logoImage =
   process.env.NODE_ENV === "production"
-    ? "https://halycron.space/logo_dark.png"
-    : "http://localhost:3000/logo_dark.png"; // For local development
+    ? "https://www.todothat.space/todothat-logo.svg"
+    : "http://localhost:3000/todothat-logo.svg"; // For local development
 
 interface EmailVerificationProps {
   url: string;
@@ -43,7 +43,7 @@ export const EmailVerification = ({
         <Container style={container}>
           {/* Header */}
           <Section style={headerSection}>
-            {/* <Img src={logoUrl} width="140" alt={appName} style={logo} /> */}
+            <Img src={logoUrl} width="140" alt={appName} style={logo} />
           </Section>
 
           {/* Content card */}

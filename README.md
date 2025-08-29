@@ -41,7 +41,7 @@
 - [x] drizzle default now with timezone
 - [x] Store timezone tasks (new Date()).toISOString()
 - [] change task project field from text to unique id (will see)
-- [] Google authentication
+- [x] Google authentication
 - [x] rdbms relations sql drizzle
 - [x] For knock i have to create a knock user
 - [x] trigger.dev for automaticlly email sent
@@ -65,8 +65,12 @@
 - [x] terns and privacy policy tabs
 - [] noti icon active 
 - [x] logo for the app
-- [x] ask for logo url for emails
+- [] ask for logo url for emails not shwoing
 - [] email time is showing wrong
+- [] hydration issue
+- [] meta data
+- [] when login with google create knock user
+- [] extract user country from ip iso 3 code when user create account
 
 #not working bc of layout changes
 

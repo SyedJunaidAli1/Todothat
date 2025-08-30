@@ -15,8 +15,8 @@ import * as React from "react";
 
 const logoImage =
   process.env.NODE_ENV === "production"
-    ? "https://www.todothat.space/todothat-logo.svg"
-    : "http://localhost:3000/todothat-logo.svg"; // For local development
+    ? "https://www.todothat.space/todothat-logo.png"
+    : "http://localhost:3000/todothat-logo.png"; // For local development
 
 interface EmailVerificationProps {
   url: string;

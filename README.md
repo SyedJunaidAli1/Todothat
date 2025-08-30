@@ -64,7 +64,7 @@
 - [x] terns and privacy policy tabs
 - [] noti icon active
 - [x] logo for the app
-- [] ask for logo url for emails not shwoing
+- [x] ask for logo url for emails not shwoing
 - [] email time is showing wrong
 - [] hydration issue
 - [] meta data

@@ -24,43 +24,44 @@ export const signUp = async (name: string, email: string, password: string) => {
     });
 
     const user = res?.user;
-
     if (!user?.id) {
-      console.error("User creation failed, response was:", res);
       throw new Error("User creation failed");
     }
 
-    try {
-      // ✅ Try to create Knock user
-      const knockRes = await fetch(`https://api.knock.app/v1/users/${user.id}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${process.env.KNOCK_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: user.email,
-          name: user.name || "User",
-        }),
-      });
+    // 🔹 Test Knock user creation here
+    await knockUser({
+      id: user.id,
+      email: email, // use the email you passed in signup
+      name: name,   // use the name you passed in signup
+    });
 
-      if (!knockRes.ok && knockRes.status !== 422) {
-        const errorText = await knockRes.text();
-        console.error("Knock user creation failed:", errorText);
-        throw new Error("Knock user creation failed");
-      }
-
-    } catch (knockError) {
-      console.warn("Knock user might already exist or failed to create:", knockError);
-      // Continue anyway if it's a 422
-    }
-
-    return user;
+    return res;
   } catch (error) {
-    console.error("Signup or Knock user creation failed:", error);
+    console.error("Signup user creation failed:", error);
     throw new Error("Failed to Sign up");
   }
 };
+
+export const knockUser = async (user: { id: string; email: string; name?: string }) => {
+  const knockRes = await fetch(`https://api.knock.app/v1/users/${user.id}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${process.env.KNOCK_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: user.email,
+      name: user.name,
+    }),
+  });
+
+  if (!knockRes.ok && knockRes.status !== 422) {
+    const errorText = await knockRes.text();
+    console.error("Knock user creation failed:", errorText);
+    throw new Error("Knock user creation failed");
+  }
+  return { success: true };
+}
 
 export const sendVerify = async (email: string) => {
   try {

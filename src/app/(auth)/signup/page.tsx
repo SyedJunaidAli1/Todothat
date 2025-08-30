@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/card";
 import { signUp } from "@/lib/methods/users";
 import { toast } from "sonner";
-import { GoogleSignInButton } from "../google-login/page";
 
 export default function Page() {
   const router = useRouter();
@@ -167,8 +166,7 @@ export default function Page() {
                   >
                     {isLoading ? "Creating account..." : "Create Account"}
                   </Button>
-                  <GoogleSignInButton />
-                  
+
                   <p className="text-sm text-gray-500 text-center">
                     By creating an account you agree to our{" "}
                     <Link

@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/card";
 import { signIn } from "@/lib/methods/users";
 import { toast } from "sonner";
-import { GoogleSignInButton } from "../google-login/page";
 
 export default function Page() {
   const [email, setEmail] = useState<string>("");
@@ -158,7 +157,6 @@ export default function Page() {
                   >
                     {isLoading ? "Signing in..." : "Sign In"}
                   </Button>
-                  <GoogleSignInButton />
 
                   <p className="text-sm text-center">
                     Forgot password?{" "}

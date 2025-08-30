@@ -61,15 +61,13 @@
 - [x] signout btn push to sign page
 - [x] double sonner for task bug fix
 - [x] image issue fix in production
-- [] look in to Google Oauth issue
 - [x] terns and privacy policy tabs
-- [] noti icon active 
+- [] noti icon active
 - [x] logo for the app
 - [] ask for logo url for emails not shwoing
 - [] email time is showing wrong
 - [] hydration issue
 - [] meta data
-- [] when login with google create knock user
 - [] extract user country from ip iso 3 code when user create account
 
 #not working bc of layout changes

@@ -6,6 +6,7 @@ import { nextCookies } from "better-auth/next-js";
 import { Resend } from 'resend';
 import EmailVerification from "@/emails/EmailVerification";
 import ResetPasswordEmail from "@/emails/ResetPasswordEmail";
+import { knockUser } from "./methods/users";
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
 export const auth = betterAuth({
@@ -40,13 +41,6 @@ export const auth = betterAuth({
                 throw new Error("Failed to send verification email");
             }
         },
-    },
-    socialProviders: {
-        google: {
-            clientId: process.env.GOOGLE_CLIENT_ID as string,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-
-        }
     },
     database: drizzleAdapter(db, {
         provider: "pg",

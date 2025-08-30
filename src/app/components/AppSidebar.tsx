@@ -65,7 +65,7 @@ function AppSidebar({
               <Link href={"/dashboard"}>
                 <div className="flex items-center justify-center">
                   <Image
-                    src="/todothat-logo-only.svg"
+                    src="/todothat-logo-only.png"
                     alt="logo"
                     width={35}
                     height={35}

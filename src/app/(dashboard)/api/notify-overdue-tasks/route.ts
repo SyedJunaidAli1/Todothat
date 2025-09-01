@@ -17,14 +17,12 @@ export async function GET() {
       .select({
         id: tasks.id,
         title: tasks.title,
-        dueDate: tasks.dueDate,
         userId: tasks.userId,
       })
       .from(tasks)
       .where(
         and(
           isNotNull(tasks.dueDate),
-          lt(tasks.dueDate, now),
           eq(tasks.completed, false),
           eq(tasks.overdueNotified, false)
         )
@@ -43,7 +41,6 @@ export async function GET() {
             task: {
               id: t.id,
               title: t.title,
-              dueDate: t.dueDate?.toLocaleTimeString(),
             },
           },
         })

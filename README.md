@@ -62,13 +62,12 @@
 - [x] double sonner for task bug fix
 - [x] image issue fix in production
 - [x] terns and privacy policy tabs
-- [] noti icon active
+- [] noti dot icon active
 - [x] logo for the app
 - [x] ask for logo url for emails not shwoing
-- [] email time is showing wrong
+- [x] remove task time
 - [] hydration issue
 - [] meta data
-- [] extract user country from ip iso 3 code when user create account
 
 #not working bc of layout changes
 

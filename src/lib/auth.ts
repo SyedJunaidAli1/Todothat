@@ -6,7 +6,6 @@ import { nextCookies } from "better-auth/next-js";
 import { Resend } from 'resend';
 import EmailVerification from "@/emails/EmailVerification";
 import ResetPasswordEmail from "@/emails/ResetPasswordEmail";
-import { knockUser } from "./methods/users";
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
 export const auth = betterAuth({

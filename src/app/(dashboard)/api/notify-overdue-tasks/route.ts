@@ -23,6 +23,7 @@ export async function GET() {
       .where(
         and(
           isNotNull(tasks.dueDate),
+          lt(tasks.dueDate, now),
           eq(tasks.completed, false),
           eq(tasks.overdueNotified, false)
         )

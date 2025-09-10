@@ -1,5 +1,5 @@
-"use client"; 
-import { Suspense } from "react"; 
+"use client";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";

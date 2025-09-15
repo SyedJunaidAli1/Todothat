@@ -14,12 +14,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body cz-shortcut-listen="true">
-        <Suspense fallback={<div>Loading...</div>}>
-          <LayoutWithSidebar>{children}</LayoutWithSidebar>
-        </Suspense>
-      </body>
-    </html>
+    <Suspense fallback={<div>Loading...</div>}>
+      <LayoutWithSidebar>{children}</LayoutWithSidebar>
+    </Suspense>
   );
 }

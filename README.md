@@ -66,7 +66,7 @@
 - [x] logo for the app
 - [x] ask for logo url for emails not shwoing
 - [x] remove task time
-- [] hydration issue
+- [x] hydration issue
 - [] meta data
 
 #not working bc of layout changes

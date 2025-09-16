@@ -1,4 +1,18 @@
+import { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Terms & Condition | Todothat – Get Organized, Stay Productive",
+  description:
+    "Manage your tasks, projects, and productivity with Todothat. Stay organized, prioritize, and get things done.",
+  keywords: [
+    "task manager",
+    "todo app",
+    "project management",
+    "productivity",
+    "Todothat",
+  ],
+};
 
 const page = () => {
   return (

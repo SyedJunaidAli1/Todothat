@@ -67,7 +67,7 @@
 - [x] ask for logo url for emails not shwoing
 - [x] remove task time
 - [x] hydration issue
-- [] meta data
+- [x] meta data
 
 #not working bc of layout changes
 

@@ -1,84 +1,88 @@
-#TODO
+📌 Todothat
 
-- [x] Make sidebar with all the features
-- [x] make theme toggle button
-- [x] make Profile in footer of the sidebar
-- [x] Authentication using better auth
-- [x] set up DB using neon
-- [x] set up drizzle orm for neon
-- [x] fix the childern alignment of My project
-- [x] fix my project close and open issue in collapsed view
-- [x] Sidebar with pages
-- [x] Resend setup for mail
-- [x] Domain bought for Todothat from hostinger
-- [x] Forgotpass and reset pass
-- [x] Avatar for PFP
-- [x] Email verification for new Accounts
-- [x] Email verification for manual trigger Wip and testing
-- [x] Profile DropDown menu aka three dots
-- [x] Top Loader nextjs
-- [x] Modal for Todo Task
-- [x] Todo set fnc for user
-- [x] Inbox Page
-- [x] Today Page
-- [x] Today Page Reminder update automatically
-- [x] Upcoming Page
-- [x] task compete tick works but complete boolen value stays false in the DB
-- [x] inbpx page complete task shouldnt be there
-- [x] Upcoming Page Reminder update automatically
-- [x] Completed Page
-- [x] Search Bar for Search btn
-- [x] My Projects with Dynamic Project
-- [x] My Projects with Dynamic Project add delete btn for them
-- [x] My Projects with Dynamic Project filter tasks accordingly
-- [x] My Projects with Tasks render them on right panel
-- [x] for indepentend routes attach dashboard component in the layout
-- [x] Todo save with timezone
-- [x] display time in localtime zone of the user
-- [x] set knock for notifications
-- [x] Todo notify by email
-- [x] learn about tanstack query
-- [x] drizzle default now with timezone
-- [x] Store timezone tasks (new Date()).toISOString()
-- [] change task project field from text to unique id (will see)
-- [x] Google authentication
-- [x] rdbms relations sql drizzle
-- [x] For knock i have to create a knock user
-- [x] trigger.dev for automaticlly email sent
-- [x] make own notification feed for color scheme
-- [] fix filteration for tasks projects are showing in inbox,today etc
-- [x] Project name is not showing in task component
-- [x] in search bar add task and add project not working a bug
-- [x] add a field in tasks for notificationsent spam
-- [x] change add task modal time,calender and dropdown with shad component
-- [] minor changes for time make them a one block
-- [x] Changes Made for emails
-- [x] fix issue of deployment
-- [x] move trigger.dev fnc to production
-- [x] password reset url for production is localhost3000 fix for it
-- [] some mobile optimization
-- [x] knock email template changes
-- [x] signout btn push to sign page
-- [x] double sonner for task bug fix
-- [x] image issue fix in production
-- [x] terns and privacy policy tabs
-- [] noti dot icon active
-- [x] logo for the app
-- [x] ask for logo url for emails not shwoing
-- [x] remove task time
-- [x] hydration issue
-- [x] meta data
+Organize • Prioritize • Get things done
 
-#not working bc of layout changes
+Todothat is a modern and minimal task management app designed to help you stay productive and organized. Inspired by apps like Todoist and Asana, it provides a clean interface, powerful task/project management, and a smooth user experience.
 
-- [x] Search btn is not working in this bc is is not using the code for search btn
-- [x] after projects delete navigate to inbox
-- [x] control/commad + k use effect is not working for search bar
-- [x] in search bar when we click on the tasks nothin hapens
-- [x] Aingn theme toggler properly
-- [x] Addtask and edittask are not working under routes eg: /today, /inbox, etc
+✨ Features
 
-#known issue
+📥 Inbox – Capture tasks quickly
 
-- [x] ApiError Failed to create use
-- [x] DialogTitle issue fix
+📅 Today & Upcoming – Focus on what matters now
+
+✅ Completed tasks – Track your progress
+
+📂 Projects – Organize tasks into custom projects
+
+🔎 Search – Find tasks instantly
+
+🎨 Dark/Light mode – Seamless theme toggle
+
+📬 Email notifications (via Knock) for overdue tasks
+
+🔐 Authentication – Sign up, sign in, reset password, and email verification
+
+🛠 Tech Stack
+
+Frontend:
+
+Next.js 15, React, TypeScript
+
+shadcn/ui, Tailwind CSS
+
+React Query
+
+Backend:
+
+BetterAuth (authentication)
+
+Trigger.dev(notification)
+
+Knock (notifications), Resend (email)
+
+Neon + Drizzle ORM (database)
+
+🚀 Getting Started
+1. Clone the repo
+git clone https://github.com/SyedJunaidAli1/Todothat
+cd todothat
+
+2. Install dependencies
+bun install
+
+3. Environment variables
+
+Create a .env file in the root directory and add:
+
+DATABASE_URL=
+
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL=
+
+RESEND_API_KEY=
+
+KNOCK_API_KEY=
+NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY=
+NEXT_PUBLIC_KNOCK_FEED_ID=
+
+TRIGGER_API_KEY=
+TRIGGER_SECRET_KEY=
+
+4. Run the development server
+bun run dev
+
+5. Build for production
+bun run build
+bun start
+
+🌍 Live Demo
+
+🔗 todothat.space
+
+🤝 Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+📜 License
+
+This project is licensed under the MIT License

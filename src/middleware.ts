@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
 	const sessionCookie = getSessionCookie(request);
 
 	// Skip protection for auth routes
-	const publicPaths = ["/signin", "/signup", "/forgot-password", "/reset-password"];
+	const publicPaths = ["/signin", "/signup", "/forgot-password", "/reset-password", "/terms", "/auth-illustration.png", "/about", "/privacy"];
 	const isPublicPath = publicPaths.some((path) =>
 		request.nextUrl.pathname.startsWith(path)
 	);

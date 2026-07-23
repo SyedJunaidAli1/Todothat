@@ -5,7 +5,7 @@ export const notifyOverdueTask = schedules.task({
   cron: "*/5 * * * *", // every 5 minutes
   run: async (_payload, { ctx }) => {
     try {
-      const res = await fetch("https://www.todothat.space/api/notify-overdue-tasks", {
+      const res = await fetch("https://www.todothat.online/api/notify-overdue-tasks", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

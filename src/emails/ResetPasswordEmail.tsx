@@ -30,7 +30,7 @@ export const ResetPasswordEmail = ({
   url,
   user = "there",
   appName = "Todothat",
-  supportEmail = "noreply@todothat.space",
+  supportEmail = "noreply@todothat.online",
   logoUrl = logoImage,
 }: ResetPasswordEmailProps) => {
   return (
